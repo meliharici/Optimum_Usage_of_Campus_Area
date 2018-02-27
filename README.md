@@ -4,6 +4,6 @@ This Project Creted as Senior Project for Özyegin University Computer Science D
 
 Project Contributors;
 
-Mehmet Melih Arıcı  &  Eren Balatkan 
+**Mehmet Melih Arıcı  &  Eren Balatkan** 
 
 Project Supervisor : Assoc.Prof.Dr.Reyhan Aydogan
