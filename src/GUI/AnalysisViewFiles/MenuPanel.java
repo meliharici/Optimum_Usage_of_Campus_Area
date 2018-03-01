@@ -4,11 +4,7 @@ package GUI.AnalysisViewFiles;
 
 import Controller.Configurations;
 import Controller.MainController;
-import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
-import net.sourceforge.jdatepicker.impl.UtilDateModel;
-import sun.applet.Main;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -33,8 +29,8 @@ public class MenuPanel extends JPanel {
     private int separator_thickness = 10;
     private int panel_height,panel_width,top_leading;
 
-
     private int generateButtonState = 0;
+    private int mapEditorButtonState = 1;
     private int simulateButtonState = 2;
 
     private static final int BUTTON_GENERATE_STATE = 0;
@@ -45,12 +41,15 @@ public class MenuPanel extends JPanel {
     private static final int BUTTON_SIMULATIONPAUSE_STATE = 5;
 
 
-    private JComboBox<String> starting_hour_combo, starting_min_combo, finishing_hour_combo, finishing_min_combo;
+    private static final int BUTTON_NORMAL_STAGE = 1;
+    private static final int BUTTON_MAP_EDITOR_STAGE = 2;
+
+    ArrayList<MenuButton> buttons;
+    MenuButton simulationButton, generateButton, mapEditorButton, mb1;
+    String[] hours, minutes;
+
+    // TODO: Clear non-used values
     JDatePickerImpl datePicker, datePicker2;
-
-    ArrayList<JPanel> panels;
-
-    JButton simulationButton, generateButton;
     JSlider simulationSpeedSlider;
 
 
@@ -64,170 +63,99 @@ public class MenuPanel extends JPanel {
         background_color = new Color(color_r, color_g, color_b);
         this.setBackground(background_color);
 
-        panels = new ArrayList<>();// all panels except the label panel
+        buttons = new ArrayList<MenuButton>();
         panel_height = this.height/15;
         panel_width = this.width - this.width/10;
-        top_leading = this.height/15;
+        top_leading = panel_height + percentage(5,this.height); // "Dashboard Label + %5 "
         separator_thickness = this.panel_height/2;
-
-        addPanels();
+        generateMenu();
     }
 
-    private void addPanels(){
+    private void generateMenu(){
         // for label panel
         JPanel lp = labelPanel();
         lp.setLocation(0,0);
         lp.setSize(this.width, panel_height);
         lp.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.white));
         this.add(lp);
-
-        // creating inner panels
-        addloadDataPanel(); // i=0
-        addTimePanel();     // i=1
-        addGeneratePanel(); // i=2
-        addSimulationPanel(); // i=3
-
-        // putting inner panels into the menu panel
-        for(int i = 0; i < panels.size(); i++){
-                if(i > 1)   // panels after TimePanel
-                    panels.get(i).setLocation(0,  (top_leading + ((i+4) * panel_height) + i*separator_thickness));
-                else
-                    panels.get(i).setLocation(0,  (top_leading + ((i+1) * panel_height) + i*separator_thickness)); // (+1 panel_height because of TimePanel)
-
-                if(i == 1)  // TimePanel
-                    panels.get(i).setSize(panel_width, 4*panel_height);
-                else
-                    panels.get(i).setSize(panel_width, panel_height);
-
-            panels.get(i).setBackground(Color.lightGray);
-            panels.get(i).setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
-            this.add(panels.get(i));
-        }
+        addMenuButtons();
     }
 
-    private void addTimePanel(){
-        JPanel panel = new JPanel();
-        panel.setLayout(null);
-        panel.setBackground(background_color);
+    private void addMenuButtons(){
+        // Time Button
+        int numButtons = 0;
+        mb1 = new MenuButton(0,top_leading + (numButtons * panel_height) + numButtons*separator_thickness,panel_width,2*panel_height,"");
+        String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday", "Sunday"};
+        fillTimeBoxes();
+        mb1.addLabel(percentage(5,panel_width), percentage(15,panel_height), percentage(45, panel_width), percentage(30, panel_height), "Days");
+        mb1.addCombo(percentage(5,panel_width), percentage(70,panel_height), percentage(45, panel_width), percentage(50, panel_height), days);
+        mb1.addLabel(percentage(65,panel_width), percentage(15,panel_height), percentage(45, panel_width), percentage(30, panel_height), "Time");
+        mb1.addCombo(percentage(58,panel_width), percentage(70,panel_height), percentage(20, panel_width), percentage(50, panel_height), hours);
+        mb1.addCombo(percentage(80,panel_width), percentage(70,panel_height), percentage(20, panel_width), percentage(50, panel_height), minutes);
+        mb1.setEnabled(false);
 
-        // Time Panel GUI parameters
-        int time_panel_height = 4*panel_height;
-        int height_middle = time_panel_height/2;
-        int leading_x_dates = panel_width/100; // %1 of panel width
-        int leading_x_hours = (panel_width*56)/100; // %56 of panel width
+        // Generate Button
+        numButtons = 1;
+        top_leading += panel_height;
+        generateButton = new MenuButton(0,top_leading + (numButtons * panel_height) + numButtons*separator_thickness,panel_width,panel_height,"Generate");
+        generateButton.addActionListener(e -> {
+            generate();
+        });
 
+        // Simulate Button
+        numButtons = 2;
+        simulationButton = new MenuButton(0,top_leading + (numButtons * panel_height) + numButtons*separator_thickness,panel_width,panel_height,"Simulate");
+        simulationButton.addActionListener(e -> {
+            simulateButtonEvent();
+        });
+
+        // Map Editor Button
+        numButtons = 3;
+        mapEditorButton = new MenuButton(0,top_leading + (numButtons * panel_height) + numButtons*separator_thickness,panel_width,panel_height,"Map Editor");
+        mapEditorButton.addActionListener(e -> {
+            mapEditor();
+        });
+
+        this.add(mb1);
+        this.add(generateButton);
+        this.add(simulationButton);
+        this.add(mapEditorButton);
+    }
+
+    private int percentage(int percent, int number){
+        return (number*percent)/100;
+    }
+
+    private void fillTimeBoxes(){
         // Setting values for Java combo box
-        String[] hours = new String[24];
-        String[] minutes = new String[60];
-
+        hours = new String[24];
+        minutes = new String[60];
         for(int i=0; i < 24; i++)
             hours[i] = String.format("%02d",  i);
         for(int i=0; i < 60; i++)
             minutes[i] = String.format("%02d",  i);
-
-
-        // creating date models for calendar panel
-        UtilDateModel model = new UtilDateModel();
-        JDatePanelImpl datePanel = new JDatePanelImpl(model);
-
-        // Starting Date Components
-        JLabel startingDateLabel = new JLabel("Starting Date");
-        startingDateLabel.setLocation(leading_x_dates,time_panel_height/10);
-        startingDateLabel.setSize((panel_width * 50)/100,time_panel_height/10);
-        panel.add(startingDateLabel);
-
-        JLabel startingHourLabel = new JLabel("Hour");
-        startingHourLabel.setLocation(leading_x_hours,time_panel_height/10);
-        startingHourLabel.setSize((panel_width * 20)/100,time_panel_height/10);
-        panel.add(startingHourLabel);
-
-        starting_hour_combo = new JComboBox<String>(hours);
-        starting_hour_combo.setLocation(leading_x_hours,time_panel_height/4);
-        starting_hour_combo.setSize((panel_width*20)/100,(time_panel_height*15)/100);
-        panel.add(starting_hour_combo);
-
-        JLabel startingMinLabel = new JLabel("Min.");
-        startingMinLabel.setLocation((panel_width*80)/100,time_panel_height/10);
-        startingMinLabel.setSize((panel_width * 20)/100,time_panel_height/10);
-        panel.add(startingMinLabel);
-
-        starting_min_combo = new JComboBox<String>(minutes);
-        starting_min_combo.setLocation((panel_width*80)/100,time_panel_height/4);
-        starting_min_combo.setSize((panel_width*20)/100,(time_panel_height*15)/100);
-        panel.add(starting_min_combo);
-
-        datePicker = new JDatePickerImpl(datePanel);
-        datePicker.setBounds(leading_x_dates, time_panel_height/4, (panel_width*50)/100, (time_panel_height*15)/100);
-        datePicker.setBackground(Color.lightGray);
-        panel.add(datePicker);
-
-
-        // Finishing Date Components
-        JLabel finishingDateLabel = new JLabel("Finishing Date");
-        finishingDateLabel.setLocation(leading_x_dates,height_middle + time_panel_height/10);
-        finishingDateLabel.setSize((panel_width * 50)/100,time_panel_height/10);
-        panel.add(finishingDateLabel);
-
-        JLabel finishingHourLabel = new JLabel("Hour");
-        finishingHourLabel.setLocation(leading_x_hours,height_middle + time_panel_height/10);
-        finishingHourLabel.setSize((panel_width * 20)/100,time_panel_height/10);
-        panel.add(finishingHourLabel);
-
-        finishing_hour_combo = new JComboBox<String>(hours);
-        finishing_hour_combo.setLocation(leading_x_hours,height_middle + time_panel_height/4);
-        finishing_hour_combo.setSize((panel_width*20)/100,(time_panel_height*15)/100);
-        panel.add(finishing_hour_combo);
-
-        JLabel finishingMinLabel = new JLabel("Min.");
-        finishingMinLabel.setLocation((panel_width*80)/100,height_middle + time_panel_height/10);
-        finishingMinLabel.setSize((panel_width * 20)/100,time_panel_height/10);
-        panel.add(finishingMinLabel);
-
-        finishing_min_combo = new JComboBox<String>(minutes);
-        finishing_min_combo.setLocation((panel_width*80)/100,height_middle + time_panel_height/4);
-        finishing_min_combo.setSize((panel_width*20)/100,(time_panel_height*15)/100);
-        panel.add(finishing_min_combo);
-
-        UtilDateModel model2 = new UtilDateModel();
-        JDatePanelImpl datePanel2 = new JDatePanelImpl(model2);
-        datePicker2 = new JDatePickerImpl(datePanel2);
-        datePicker2.setBounds(leading_x_dates, height_middle + time_panel_height/4, (panel_width*50)/100, (time_panel_height*15)/100);
-        datePicker2.setBackground(Color.lightGray);
-        panel.add(datePicker2);
-
-        panels.add(panel);
     }
 
-    private void addGeneratePanel(){
-        JPanel panel = new JPanel();
-        panel.setLayout(null);
-        panel.setBackground(background_color);
-        generateButton = new JButton("Generate");
-        generateButton.setFont(new Font("Santa Fe LET", Font.PLAIN, this.width/20));
-        generateButton.setLocation(0,0);
-        generateButton.setSize(panel_width,panel_height);
-        generateButton.setBackground(Color.lightGray);
-        generateButton.addActionListener(e -> {
-            generate();
-        });
-        panel.add(generateButton);
-        panels.add(panel);
+    private void mapEditor(){
+        // TODO: Change method name (if better) and implement correspondingly
+
+
+        //changeMapEditorButton(BUTTON_MAP_EDITOR_STAGE);
+
+
     }
 
-    private void addSimulationPanel(){
-        JPanel panel = new JPanel();
-        panel.setLayout(null);
-        panel.setBackground(background_color);
-        simulationButton = new JButton("Simulate");
-        simulationButton.setFont(new Font("Santa Fe LET", Font.PLAIN, this.width/20));
-        simulationButton.setLocation(0,0);
-        simulationButton.setSize(panel_width,panel_height);
-        simulationButton.setBackground(Color.lightGray);
-        simulationButton.addActionListener(e -> {
-            simulateButtonEvent();
-        });
-        panel.add(simulationButton);
-        panels.add(panel);
+    private void changeMapEditorButton(int state){
+        switch (state){
+            case BUTTON_NORMAL_STAGE:
+                mapEditorButton.setText("Map Editor");
+                mapEditorButtonState = state;
+                return;
+            case BUTTON_MAP_EDITOR_STAGE:
+                mapEditorButton.setText("Simulator");
+                mapEditorButtonState = state;
+                return;
+        }
     }
 
     private void changeGenerateButton(int state){
@@ -259,7 +187,6 @@ public class MenuPanel extends JPanel {
 
     private void simulateButtonEvent(){
         MainController controller = MainController.getInstance();
-
         if(simulateButtonState == BUTTON_SIMULATE_STATE){
             if(checkDateInputs() == false) return;
             changeSimulationButton(BUTTON_SIMULATIONSTOP_STATE);
@@ -285,10 +212,11 @@ public class MenuPanel extends JPanel {
     }
 
     private void generate(){
+        /*
         if(checkDateInputs() == false){
             return;
         }
-
+        */
         MainController controller = MainController.getInstance();
 
         if(controller.isSimulationRunning){
@@ -309,7 +237,6 @@ public class MenuPanel extends JPanel {
     }
 
     private void generateSketch(){
-
         String filename = "SKETCH.png";
         File outputfile = new File(filename);
         try {
@@ -319,6 +246,22 @@ public class MenuPanel extends JPanel {
         }
     }
 
+
+    private void setTimeOnController(){
+        String day = (String) mb1.combos.get(0).getSelectedItem();
+        int hour = Integer.valueOf(((String) mb1.combos.get(1).getSelectedItem()));
+        int min = Integer.valueOf(((String) mb1.combos.get(2).getSelectedItem()));
+
+        System.out.println(day + " " + hour + ":" + min);
+
+        // TODO: Update Controller Correspondingly
+
+    }
+
+
+    // TODO: Delete below lines if not required
+    // Bu alttakinin artık geçerliliği yok.
+    /*
     private void setTimeOnController(){
         MainController controller = MainController.getInstance();
 
@@ -347,7 +290,10 @@ public class MenuPanel extends JPanel {
         controller.startingDate = startingDate;
         controller.finishingDate = finishingDate;
     }
+    */
 
+
+    //TODO: Delete below function if not required
     private boolean checkDateInputs(){
         Date startingDate = (Date) datePicker.getModel().getValue();
         Date finishingDate = (Date) datePicker2.getModel().getValue();
@@ -358,8 +304,6 @@ public class MenuPanel extends JPanel {
         }
         return true;
     }
-
-
 
     private JPanel labelPanel(){
         JPanel panel = new JPanel();
@@ -373,22 +317,6 @@ public class MenuPanel extends JPanel {
 
         panel.add(label);
         return panel;
-    }
-
-    private void addloadDataPanel(){
-        JPanel panel = new JPanel();
-        panel.setLayout(null);
-        panel.setBackground(background_color);
-        JButton button = new JButton("Load the data");
-        button.setFont(new Font("Santa Fe LET", Font.PLAIN, this.width/20));
-        button.setLocation(0,0);
-        button.setSize(panel_width,panel_height);
-        button.setBackground(Color.lightGray);
-        button.addActionListener(e -> {
-            chooseFile();
-        });
-        panel.add(button);
-        panels.add(panel);
     }
 
     private void chooseFile() {
@@ -407,7 +335,6 @@ public class MenuPanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-
     }
 }
 
