@@ -21,6 +21,10 @@ public class MapPanel extends JPanel {
     private static final double resolution_x = 7500.0;
     private static final double resolution_y = 5000.0;
 
+    private int paintMode = 0;
+    private static int PAINT_NORMAL = 0;
+    private static int PAINT_MAPEDITOR = 1;
+
 
 
     public MapPanel(int WIDTH, int HEIGHT) {
