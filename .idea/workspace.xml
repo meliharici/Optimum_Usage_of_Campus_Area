@@ -15,18 +15,28 @@
       <file leaf-file-name="Main.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="105">
-              <caret line="9" column="7" lean-forward="true" selection-start-line="9" selection-start-column="7" selection-end-line="9" selection-end-column="7" />
+            <state relative-caret-position="-9">
+              <caret line="9" column="7" lean-forward="false" selection-start-line="9" selection-start-column="7" selection-end-line="9" selection-end-column="7" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Configurations.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Configurations.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Controller/Configurations.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="326">
-              <caret line="57" column="41" lean-forward="false" selection-start-line="57" selection-start-column="41" selection-end-line="57" selection-end-column="41" />
+            <state relative-caret-position="-9">
+              <caret line="56" column="20" lean-forward="false" selection-start-line="56" selection-start-column="20" selection-end-line="56" selection-end-column="20" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MapPanel.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/GUI/AnalysisViewFiles/MapPanel.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="3975">
+              <caret line="187" column="40" lean-forward="false" selection-start-line="187" selection-start-column="40" selection-end-line="187" selection-end-column="40" />
               <folding />
             </state>
           </provider>
@@ -42,6 +52,13 @@
   <component name="GradleLocalSettings">
     <option name="externalProjectsViewState">
       <projects_view />
+    </option>
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/src/GUI/AnalysisViewFiles/MapPanel.java" />
+      </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
@@ -82,6 +99,19 @@
               <item name="Optimum_Usage_of_Campus_Area" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="Optimum_Usage_of_Campus_Area" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Optimum_Usage_of_Campus_Area" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="GUI" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Optimum_Usage_of_Campus_Area" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Optimum_Usage_of_Campus_Area" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="GUI" type="462c0819:PsiDirectoryNode" />
+              <item name="AnalysisViewFiles" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
@@ -93,7 +123,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="settings.editor.selected.configurable" value="vcs.Git" />
+    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
     <property name="last_opened_file_path" value="$USER_HOME$/AppData/Local/GitHubDesktop/app-1.1.0/GitHubDesktop.exe" />
   </component>
   <component name="RecentsManager">
@@ -248,7 +278,7 @@
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.13710937" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
@@ -273,16 +303,24 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="9" column="7" lean-forward="true" selection-start-line="9" selection-start-column="7" selection-end-line="9" selection-end-column="7" />
+        <state relative-caret-position="-9">
+          <caret line="9" column="7" lean-forward="false" selection-start-line="9" selection-start-column="7" selection-end-line="9" selection-end-column="7" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Controller/Configurations.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="326">
-          <caret line="57" column="41" lean-forward="false" selection-start-line="57" selection-start-column="41" selection-end-line="57" selection-end-column="41" />
+        <state relative-caret-position="-9">
+          <caret line="56" column="20" lean-forward="false" selection-start-line="56" selection-start-column="20" selection-end-line="56" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/GUI/AnalysisViewFiles/MapPanel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3975">
+          <caret line="187" column="40" lean-forward="false" selection-start-line="187" selection-start-column="40" selection-end-line="187" selection-end-column="40" />
           <folding />
         </state>
       </provider>
