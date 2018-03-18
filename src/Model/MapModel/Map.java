@@ -32,7 +32,7 @@ public class Map {
             nodes[i][yEnd] = Node.BlockNode();
         }
 
-        for(int j = 0;i<yDimension;i++){
+        for(int j = 0;j<yDimension;j++){
             nodes[0][j] = Node.BlockNode();
             nodes[xEnd][j] = Node.BlockNode();
         }
