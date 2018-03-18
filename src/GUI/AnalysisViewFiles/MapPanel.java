@@ -4,6 +4,7 @@ package GUI.AnalysisViewFiles;
 import Controller.Configurations;
 import Controller.MainController;
 import Model.CampusData;
+import Model.MapModel.CampusMap;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -13,6 +14,7 @@ import javax.swing.*;
 public class MapPanel extends JPanel {
 
     private CampusData campusData;
+    private CampusMap map;
     private int width,height;
     private int x = 0;
     private int y = 0;
@@ -22,8 +24,8 @@ public class MapPanel extends JPanel {
     private static final double resolution_y = 5000.0;
 
     private int paintMode = 0;
-    private static int PAINT_NORMAL = 0;
-    private static int PAINT_MAPEDITOR = 1;
+    public static final int PAINT_NORMAL = 0;
+    public static final int PAINT_MAPEDITOR = 1;
 
 
 
@@ -32,7 +34,13 @@ public class MapPanel extends JPanel {
         height = HEIGHT;
         this.setSize(WIDTH,HEIGHT);
 
+        this.map = CampusMap.getCampusMap();
+
         System.out.println("map panel width : " + width + "  ,map panel height: " + height);
+    }
+
+    public void setDrawMode(int mode){
+        this.paintMode = mode;
     }
 
     public void setCampusData(CampusData campusData){
@@ -156,12 +164,24 @@ public class MapPanel extends JPanel {
         super.paintComponent(g);
 
         if(campusData != null){
-
-            g.drawImage(campusData.campusMapImage, (int) (x), (int) (y), (int)(width*zoomFactor), (int)(height*zoomFactor), this);
+            g.drawImage(Configurations.DEFAULT_CAMPUS_MAP, 0, 0, width, height, this);
+            switch(paintMode){
+                case PAINT_NORMAL : paintNormal(g);break;
+                case PAINT_MAPEDITOR : paintMapEditor(g);break;
+            }
         }
 
         else
             g.drawImage(Configurations.DEFAULT_CAMPUS_MAP, 0, 0, width, height, this);
+    }
+
+    private void paintNormal(Graphics g){
+        repaint();
+    }
+
+    private void paintMapEditor(Graphics g){
+        g.fillRect(0,0,500,500);
+        repaint();
     }
 
     public void mapDragged(double x,double y){

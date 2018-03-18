@@ -2,9 +2,8 @@ package Controller;
 import javax.imageio.ImageIO;
 
 import GUI.*;
-import Model.CampusData;
-import Model.DataReader;
-import Model.LocationData;
+import Model.*;
+import Model.MapModel.CampusMap;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
@@ -43,6 +42,8 @@ public class MainController {
     public MainView mainView;
     public MenuController menuController;
 
+    public CampusMap campusMap;
+
     private MainController(){
         mainView = new MainView();
         this.menuController = new MenuController();
@@ -50,6 +51,7 @@ public class MainController {
 
     public void initialize(){
         mainView.initialize();
+
     }
 
     public void start() {

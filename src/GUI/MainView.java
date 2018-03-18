@@ -3,6 +3,7 @@ package GUI;
 import Controller.Configurations;
 import GUI.AnalysisViewFiles.AnalysisView;
 import Model.CampusData;
+import Model.MapModel.CampusMap;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,11 +12,12 @@ import java.awt.event.MouseEvent;
 
 public class MainView{
     JFrame frame;
-    JPanel mainPanel;
+    public JPanel mainPanel;
 
     JPanel currentView;
 
-    AnalysisView analysisMenu;
+    public AnalysisView analysisMenu;
+    private CampusMap campusMap;
 
     public MainView(){
 
@@ -63,6 +65,10 @@ public class MainView{
         mainPanel.repaint();
         analysisMenu.setCampusData(campusData);
         mainPanel.repaint();
+    }
+
+    public void setCampusMap(CampusMap map){
+        this.campusMap = map;
     }
 
 

@@ -1,11 +1,28 @@
 package Model.MapModel;
 
-public class Map {
-    private Node[][] nodes;
-    private int xDimension;
-    private int yDimension;
+public class CampusMap {
+    private static Node[][] nodes;
+    private static int xDimension = 500;
+    private static int yDimension = 300;
 
-    public Map(int xDimension,int yDimension){
+    private static CampusMap map;
+
+    public void saveCampusMap(String filePath){
+
+    }
+
+    public void loadCampusMap(String filePath){
+
+    }
+
+    public static CampusMap getCampusMap(){
+        if(map == null){
+            map = new CampusMap(xDimension,yDimension);
+        }
+        return map;
+    }
+
+    private CampusMap(int xDimension, int yDimension){
         this.xDimension = xDimension;
         this.yDimension = yDimension;
 
@@ -15,7 +32,7 @@ public class Map {
         CoverMapWithBlocks();
     }
 
-    public void InitializeMap(){
+    public static void InitializeMap(){
         for(Node a[] :nodes){
             for(Node b :a){
                 b = Node.RoadNode();
@@ -23,7 +40,7 @@ public class Map {
         }
     }
 
-    public void CoverMapWithBlocks(){
+    public static void CoverMapWithBlocks(){
         int xEnd = xDimension - 1;
         int yEnd = yDimension - 1;
 

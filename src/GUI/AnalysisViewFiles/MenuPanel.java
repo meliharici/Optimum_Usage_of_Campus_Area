@@ -30,7 +30,7 @@ public class MenuPanel extends JPanel {
     private int panel_height,panel_width,top_leading;
 
     private int generateButtonState = 0;
-    private int mapEditorButtonState = 1;
+    private int mapEditorButtonState = 2;
     private int simulateButtonState = 2;
 
     private static final int BUTTON_GENERATE_STATE = 0;
@@ -109,9 +109,9 @@ public class MenuPanel extends JPanel {
             simulateButtonEvent();
         });
 
-        // Map Editor Button
+        // CampusMap Editor Button
         numButtons = 3;
-        mapEditorButton = new MenuButton(0,top_leading + (numButtons * panel_height) + numButtons*separator_thickness,panel_width,panel_height,"Map Editor");
+        mapEditorButton = new MenuButton(0,top_leading + (numButtons * panel_height) + numButtons*separator_thickness,panel_width,panel_height,"CampusMap Editor");
         mapEditorButton.addActionListener(e -> {
             mapEditor();
         });
@@ -138,20 +138,28 @@ public class MenuPanel extends JPanel {
 
     private void mapEditor(){
         // TODO: Change method name (if better) and implement correspondingly
+        MainController controller = MainController.getInstance();
 
 
-        //changeMapEditorButton(BUTTON_MAP_EDITOR_STAGE);
+        if(mapEditorButtonState == BUTTON_MAP_EDITOR_STAGE){
+            controller.mainView.analysisMenu.mapPanel.setDrawMode(MapPanel.PAINT_MAPEDITOR);
+            changeMapEditorButton(BUTTON_NORMAL_STAGE);
+        }
+        else{
 
+            controller.mainView.analysisMenu.mapPanel.setDrawMode(MapPanel.PAINT_NORMAL);
+            changeMapEditorButton(BUTTON_MAP_EDITOR_STAGE);
+        }
 
     }
 
     private void changeMapEditorButton(int state){
         switch (state){
-            case BUTTON_NORMAL_STAGE:
-                mapEditorButton.setText("Map Editor");
+            case BUTTON_MAP_EDITOR_STAGE:
+                mapEditorButton.setText("CampusMap Editor");
                 mapEditorButtonState = state;
                 return;
-            case BUTTON_MAP_EDITOR_STAGE:
+            case BUTTON_NORMAL_STAGE:
                 mapEditorButton.setText("Simulator");
                 mapEditorButtonState = state;
                 return;
