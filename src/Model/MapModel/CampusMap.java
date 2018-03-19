@@ -2,8 +2,8 @@ package Model.MapModel;
 
 public class CampusMap {
     private static Node[][] nodes;
-    private static int xDimension = 500;
-    private static int yDimension = 300;
+    public static int xDimension = 800;
+    public static int yDimension = 500;
 
     private static CampusMap map;
 

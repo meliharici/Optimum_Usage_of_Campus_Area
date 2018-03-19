@@ -5,6 +5,7 @@ import Controller.Configurations;
 import Controller.MainController;
 import Model.CampusData;
 import Model.MapModel.CampusMap;
+import Model.MapModel.Node;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -164,7 +165,7 @@ public class MapPanel extends JPanel {
         super.paintComponent(g);
 
         if(campusData != null){
-            g.drawImage(Configurations.DEFAULT_CAMPUS_MAP, 0, 0, width, height, this);
+            g.drawImage(Configurations.DEFAULT_CAMPUS_MAP, x, y, (int)(width*zoomFactor), (int)(height*zoomFactor), this);
             switch(paintMode){
                 case PAINT_NORMAL : paintNormal(g);break;
                 case PAINT_MAPEDITOR : paintMapEditor(g);break;
@@ -180,7 +181,23 @@ public class MapPanel extends JPanel {
     }
 
     private void paintMapEditor(Graphics g){
-        g.fillRect(0,0,500,500);
+
+        for(int i = 0; i < CampusMap.xDimension;i++){
+            for(int j = 0; j<CampusMap.yDimension;j++){
+
+                double finalLength = (Node.NODE_SIZE*zoomFactor);
+                int[] xCoords = new int[4];
+                int[] yCoords = new int[4];
+
+                xCoords[0] = xCoords[3] = (int)(i*finalLength+x);
+                xCoords[1] = xCoords[2] = (int)((i+1)*finalLength+x);
+
+                yCoords[0] = yCoords[1] = (int)(j*finalLength+y);
+                yCoords[2] = yCoords[3] = (int)((j+1)*finalLength+y);
+
+                g.drawPolygon(xCoords,yCoords,4);
+            }
+        }
         repaint();
     }
 
@@ -197,6 +214,8 @@ public class MapPanel extends JPanel {
 
         if(-1*this.x + this.width > this.width*this.zoomFactor)this.x = (int) (this.width- this.width*this.zoomFactor);
         if(-1*this.y + this.height > this.height*this.zoomFactor)this.y = (int) (this.height- this.height*this.zoomFactor);
+
+        repaint();
     }
 
     public void mapZoomed(double zoomFactor){
