@@ -10,10 +10,11 @@ public class Node {
     public static int EF = 1;
     public static int FEAS = 2;
 
+
     public int buildingCode = 0;
 
 
-    public static final int NODE_SIZE = 10; //bu değer değişicek
+    public static final double NODE_SIZE = 2; //bu değer değişicek
 
     public int nodeState = 1;
 
