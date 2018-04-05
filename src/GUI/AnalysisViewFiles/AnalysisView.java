@@ -7,9 +7,7 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseWheelEvent;
+import java.awt.event.*;
 
 public class AnalysisView extends JPanel{
    public MapPanel mapPanel;
@@ -34,6 +32,12 @@ public class AnalysisView extends JPanel{
         this.addMouseListener(mouseHandler);
         this.addMouseMotionListener(mouseHandler);
         this.addMouseWheelListener(mouseHandler);
+
+        AnalysisMenuKeyboardHandler keyboardHandler = new AnalysisMenuKeyboardHandler(this);
+        this.addKeyListener(keyboardHandler);
+        this.setFocusable(true);
+
+        this.requestFocus();
     }
 
     public void initialize(){
@@ -42,6 +46,9 @@ public class AnalysisView extends JPanel{
         addMenuPanel();
         addMapPanel();
         addInfoPanel();
+
+
+        this.requestFocusInWindow();
     }
 
     public void addMenuPanel(){
@@ -90,6 +97,11 @@ public class AnalysisView extends JPanel{
 
     }
 
+    public void mousePressed(double x,double y){
+        this.mapPanel.mapPressed(x,y);
+        this.repaint();
+    }
+
     public void MouseZoomed(double zoomFactor){
         this.mapPanel.mapZoomed(zoomFactor);
         this.repaint();
@@ -115,10 +127,23 @@ class AnalysisMenuMouseHandler extends MouseAdapter {
     public void mousePressed(MouseEvent e){
         this.mouseX = e.getX();
         this.mouseY = e.getY();
+        this.view.mousePressed(this.mouseX,this.mouseY);
     }
 
     public void mouseWheelMoved(MouseWheelEvent e){
         view.MouseZoomed(e.getPreciseWheelRotation()/4);
+    }
+}
+
+class AnalysisMenuKeyboardHandler extends KeyAdapter {
+    public AnalysisView view;
+
+    public AnalysisMenuKeyboardHandler(AnalysisView view){
+        this.view = view;
+    }
+
+    public void keyPressed(KeyEvent e){
+        this.view.mapPanel.keyPressed(e.getKeyChar());
     }
 }
 
