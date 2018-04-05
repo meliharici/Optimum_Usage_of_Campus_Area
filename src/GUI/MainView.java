@@ -46,7 +46,7 @@ public class MainView{
     }
 
     public void initializeAnalysisPanel(){
-        analysisMenu = new AnalysisView();
+        analysisMenu = AnalysisView.getInstance();
         analysisMenu.setName("AnalysisMenu");
         analysisMenu.initialize();
         analysisMenu.setVisible(true);
@@ -70,7 +70,4 @@ public class MainView{
     public void setCampusMap(CampusMap map){
         this.campusMap = map;
     }
-
-
-
 }

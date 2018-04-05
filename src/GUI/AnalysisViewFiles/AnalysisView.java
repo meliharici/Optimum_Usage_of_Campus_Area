@@ -20,7 +20,16 @@ public class AnalysisView extends JPanel{
     private static int color_g = 63;
     private static int color_b = 83;
 
-    public AnalysisView(){
+    private static AnalysisView analysisView;
+
+    public static AnalysisView getInstance(){
+        if(analysisView == null){
+            analysisView = new AnalysisView();
+        }
+        return analysisView;
+    }
+
+    private AnalysisView(){
         AnalysisMenuMouseHandler mouseHandler = new AnalysisMenuMouseHandler(this);
         this.addMouseListener(mouseHandler);
         this.addMouseMotionListener(mouseHandler);

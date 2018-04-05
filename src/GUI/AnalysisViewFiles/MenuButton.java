@@ -24,8 +24,6 @@ public class MenuButton extends JButton {
         combos = new ArrayList<>();
     }
 
-    // this.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
-
     public void addLabel(int x, int y, int width, int height, String text){
         JLabel label =  new JLabel(text);
         label.setLocation(x,y);
