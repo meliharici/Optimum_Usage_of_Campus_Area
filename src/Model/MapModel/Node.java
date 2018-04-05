@@ -1,45 +1,31 @@
 package Model.MapModel;
 
 public class Node {
-    public static int BLOCK = 0;
+
+    public static final double NODE_SIZE = 2; //bu değer değişicek
+
+    public static int EMPTY = 0;
     public static int ROAD = 1;
     public static int WALL = 2;
     public static int BUILDING = 4;
+    public int nodeState = 0;
 
     public static int NOT_A_BUILDING = 0;
     public static int EF = 1;
     public static int FEAS = 2;
-
-
     public int buildingCode = 0;
 
+    public int xCoords,yCoords = -1; //-1 stands for unitialized
 
-    public static final double NODE_SIZE = 2; //bu değer değişicek
+    public Node[] connections = null;
 
-    public int nodeState = 1;
-
-    public Node(){
-    }
-
-    public Node(int nodeState){
+    public Node(int nodeState,int xCoords,int yCoords){
         this.nodeState = nodeState;
+        connections = new Node[8];
     }
 
-    public static Node BlockNode(){
-        return new Node(BLOCK);
-    }
-
-    public static Node RoadNode(){
-        return new Node(ROAD);
-    }
-
-    public static Node WallNode(){
-        return new Node(WALL);
-
-    }
-
-    public static Node Building(int buildingCode){
-        Node n = new Node(4);
+    public static Node Building(int buildingCode,int xCoords,int yCoords){
+        Node n = new Node(4,xCoords,yCoords);
         n.buildingCode = buildingCode;
         return n;
     }
