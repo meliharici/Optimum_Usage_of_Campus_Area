@@ -186,16 +186,27 @@ public class MapPanel extends JPanel {
             for(int j = 0; j<CampusMap.yDimension;j++){
 
                 double finalLength = (Node.NODE_SIZE*zoomFactor);
-                int[] xCoords = new int[4];
-                int[] yCoords = new int[4];
 
-                xCoords[0] = xCoords[3] = (int)(i*finalLength+x);
-                xCoords[1] = xCoords[2] = (int)((i+1)*finalLength+x);
+                if(((i+1)*finalLength+x)<0 || (i*finalLength+x)>width){
 
-                yCoords[0] = yCoords[1] = (int)(j*finalLength+y);
-                yCoords[2] = yCoords[3] = (int)((j+1)*finalLength+y);
+                }
+                else if(((j+1)*finalLength+y)<0 || (j*finalLength+y) > height){
 
-                g.drawPolygon(xCoords,yCoords,4);
+                }
+                else{
+                    int[] xCoords = new int[4];
+                    int[] yCoords = new int[4];
+
+                    xCoords[0] = xCoords[3] = (int)(i*finalLength+x);
+                    xCoords[1] = xCoords[2] = (int)((i+1)*finalLength+x);
+
+                    yCoords[0] = yCoords[1] = (int)(j*finalLength+y);
+                    yCoords[2] = yCoords[3] = (int)((j+1)*finalLength+y);
+
+                    g.drawPolygon(xCoords,yCoords,4);
+                }
+
+
             }
         }
         repaint();
