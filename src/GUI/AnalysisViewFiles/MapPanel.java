@@ -28,6 +28,13 @@ public class MapPanel extends JPanel {
     public static final int PAINT_NORMAL = 0;
     public static final int PAINT_MAPEDITOR = 1;
 
+    public int mapEditorMode = 0;
+    public static final int DEFAULT_MODE = 0;
+    public static final int BUILDING_MODE = 1;
+    public static final int ROAD_MODE = 2;
+    public static final int WALL_MODE = 3;
+    public static final int EMPTY_MODE = 4;
+
 
 
     public MapPanel(int WIDTH, int HEIGHT) {
@@ -213,10 +220,49 @@ public class MapPanel extends JPanel {
     }
 
     public void mapDragged(double x,double y){
-        this.x -= x;
-        this.y -= y;
+        if(mapEditorMode == DEFAULT_MODE){
+            this.x -= x;
+            this.y -= y;
 
-        checkAndValidateCoordinates();
+            checkAndValidateCoordinates();
+        }
+
+    }
+
+    public void mapPressed(double x,double y){
+        if(paintMode == PAINT_MAPEDITOR){
+            switch(mapEditorMode){
+                case DEFAULT_MODE:break;
+                case BUILDING_MODE:System.out.println("Placed Building");break;
+                case ROAD_MODE:System.out.println("Placed Road");break;
+                case WALL_MODE:System.out.println("Placed Wall");break;
+                case EMPTY_MODE:System.out.println("Cleared Node");break;
+            }
+        }
+
+    }
+
+    public void keyPressed(char c){
+        int num = 0;
+        try{
+            num = Integer.parseInt(c+"");
+        }
+        catch(Exception e){
+            return;
+        }
+
+        System.out.println(num);
+
+        if(paintMode==PAINT_MAPEDITOR){
+            switch(num){
+                case 0:mapEditorMode = DEFAULT_MODE;break;
+                case 1:mapEditorMode = BUILDING_MODE;break;
+                case 2:mapEditorMode = ROAD_MODE;break;
+                case 3:mapEditorMode = WALL_MODE;break;
+                case 4:mapEditorMode = EMPTY_MODE;break;
+            }
+        }
+
     }
 
     public void checkAndValidateCoordinates(){

@@ -116,6 +116,11 @@ public class MenuPanel extends JPanel {
             mapEditor();
         });
 
+        mb1.setFocusable(false);
+        generateButton.setFocusable(false);
+        simulationButton.setFocusable(false);
+        mapEditorButton.setFocusable(false);
+
         this.add(mb1);
         this.add(generateButton);
         this.add(simulationButton);
