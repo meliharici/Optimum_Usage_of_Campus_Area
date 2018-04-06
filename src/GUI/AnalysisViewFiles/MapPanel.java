@@ -21,6 +21,11 @@ public class MapPanel extends JPanel {
     private int y = 0;
     private double zoomFactor = 1;
 
+
+    private double oldMouseX,oldMouseY;
+
+    private int mouseNodeX,mouseNodeY;
+
     private static final double resolution_x = 7500.0;
     private static final double resolution_y = 5000.0;
 
@@ -121,6 +126,7 @@ public class MapPanel extends JPanel {
 
 
     //will be removed
+
     private Point rotate_and_translate(Point original, int angle, double translateX, double translateY){
         double centerx = resolution_x/2;
         double centery = resolution_y/2;
@@ -167,6 +173,7 @@ public class MapPanel extends JPanel {
 
 
 
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -210,7 +217,10 @@ public class MapPanel extends JPanel {
                     yCoords[0] = yCoords[1] = (int)(j*finalLength+y);
                     yCoords[2] = yCoords[3] = (int)((j+1)*finalLength+y);
 
-                    g.drawPolygon(xCoords,yCoords,4);
+                    Node[][] nodes = CampusMap.getCampusMap().nodes;
+
+                    boolean isMouseOnNode = i==this.mouseNodeX && j==this.mouseNodeY;
+                    drawNode(g,nodes[i][j],xCoords,yCoords,isMouseOnNode);
                 }
 
 
@@ -219,27 +229,104 @@ public class MapPanel extends JPanel {
         repaint();
     }
 
-    public void mapDragged(double x,double y){
-        if(mapEditorMode == DEFAULT_MODE){
-            this.x -= x;
-            this.y -= y;
+    public void drawNode(Graphics g,Node n,int[] xCoords,int[] yCoords,boolean isMouseOnNode){
+        Node[][] nodes = CampusMap.getCampusMap().nodes;
 
-            checkAndValidateCoordinates();
+        if(isMouseOnNode && mapEditorMode!=DEFAULT_MODE){
+            if(nodes[mouseNodeX][mouseNodeY].nodeState == Node.EMPTY){
+                g.setColor(Color.YELLOW);
+            }
+            else{
+                g.setColor(Color.RED);
+            }
+            g.fillPolygon(xCoords,yCoords,4);
+            return;
+        }
+
+        switch(n.nodeState){
+            case Node.EMPTY:
+                g.setColor(Color.BLACK);
+                g.drawPolygon(xCoords,yCoords,4);
+                break;
+            case Node.ROAD:
+                g.setColor(Color.CYAN);
+                g.fillPolygon(xCoords,yCoords,4);
+                break;
+            case Node.WALL:
+                g.setColor(Color.GRAY);
+                g.fillPolygon(xCoords,yCoords,4);
+                break;
+            case Node.BUILDING:
+                g.setColor(Color.GREEN);
+                g.fillPolygon(xCoords,yCoords,4);
+                break;
         }
 
     }
 
-    public void mapPressed(double x,double y){
-        if(paintMode == PAINT_MAPEDITOR){
-            switch(mapEditorMode){
-                case DEFAULT_MODE:break;
-                case BUILDING_MODE:System.out.println("Placed Building");break;
-                case ROAD_MODE:System.out.println("Placed Road");break;
-                case WALL_MODE:System.out.println("Placed Wall");break;
-                case EMPTY_MODE:System.out.println("Cleared Node");break;
-            }
+    public void mapDragged(double x,double y){
+        if(mapEditorMode == DEFAULT_MODE){
+            double xDiff = oldMouseX-x;
+            double yDiff = oldMouseY-y;
+            this.oldMouseX = x;
+            this.oldMouseY = y;
+
+            this.x -= xDiff;
+            this.y -= yDiff;
+
+            checkAndValidateCoordinates();
+        }
+        else{
+            findMouseNode(x,y);
+            placeNode(x,y);
         }
 
+    }
+
+    public void mouseMoved(double x,double y){
+        this.oldMouseX = x;
+        this.oldMouseY = y;
+        findMouseNode(x,y);
+    }
+
+    public void mapPressed(double x,double y){
+        placeNode(x,y);
+    }
+
+    public void placeNode(double x,double y){
+        Node[][] nodes = CampusMap.getCampusMap().nodes;
+
+        if(paintMode == PAINT_MAPEDITOR){
+            switch(mapEditorMode){
+                case DEFAULT_MODE:
+                    break;
+                case BUILDING_MODE:
+                    nodes[mouseNodeX][mouseNodeY].nodeState = Node.BUILDING;
+                    System.out.println("Placed Building");
+                    break;
+                case ROAD_MODE:
+                    nodes[mouseNodeX][mouseNodeY].nodeState = Node.ROAD;
+                    System.out.println("Placed Road");
+                    break;
+                case WALL_MODE:
+                    nodes[mouseNodeX][mouseNodeY].nodeState = Node.WALL;
+                    System.out.println("Placed Wall");
+                    break;
+                case EMPTY_MODE:
+                    nodes[mouseNodeX][mouseNodeY].nodeState = Node.EMPTY;
+                    System.out.println("Cleared Node");
+                    break;
+            }
+        }
+    }
+
+    public void findMouseNode(double x,double y){
+        double finalLength = (Node.NODE_SIZE*zoomFactor);
+        double reverseTranslationX = x-this.x;
+        double reverseTranslationY = y-this.y;
+
+        this.mouseNodeX = (int)(reverseTranslationX/finalLength);
+        this.mouseNodeY = (int)(reverseTranslationY/finalLength);
     }
 
     public void keyPressed(char c){

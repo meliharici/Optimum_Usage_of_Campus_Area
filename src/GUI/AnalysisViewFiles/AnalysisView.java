@@ -92,9 +92,25 @@ public class AnalysisView extends JPanel{
     }
 
     public void MouseDragged(double x,double y){
-        this.mapPanel.mapDragged(x,y);
+        double mapPanelStartX = Configurations.WIDTH*Configurations.MENU_PANEL_WIDTH_RATIO;
+        double mapPanelStartY = 0;
+
+        double xOnMap = x-mapPanelStartX;
+        double yOnMap = y-mapPanelStartY;
+
+        this.mapPanel.mapDragged(xOnMap,yOnMap);
         this.repaint();
 
+    }
+
+    public void MouseMoved(double x,double y){
+        double mapPanelStartX = Configurations.WIDTH*Configurations.MENU_PANEL_WIDTH_RATIO;
+        double mapPanelStartY = 0;
+
+        double xOnMap = x-mapPanelStartX;
+        double yOnMap = y-mapPanelStartY;
+
+        this.mapPanel.mouseMoved(xOnMap,yOnMap);
     }
 
     public void mousePressed(double x,double y){
@@ -112,22 +128,24 @@ public class AnalysisView extends JPanel{
 
 class AnalysisMenuMouseHandler extends MouseAdapter {
     public AnalysisView view;
-    private double mouseX,mouseY;
 
     public AnalysisMenuMouseHandler(AnalysisView view){
         this.view = view;
     }
 
     public void mouseDragged(MouseEvent e){
-        view.MouseDragged(mouseX-e.getX(),mouseY-e.getY());
-        this.mouseY = e.getY();
-        this.mouseX = e.getX();
+        this.view.MouseDragged(e.getX(),e.getY());
+    }
+
+    public void mouseMoved(MouseEvent e){
+        double x = e.getX();
+        double y = e.getY();
+
+        this.view.MouseMoved(x,y);
     }
 
     public void mousePressed(MouseEvent e){
-        this.mouseX = e.getX();
-        this.mouseY = e.getY();
-        this.view.mousePressed(this.mouseX,this.mouseY);
+        this.view.mousePressed(e.getX(),e.getY());
     }
 
     public void mouseWheelMoved(MouseWheelEvent e){
