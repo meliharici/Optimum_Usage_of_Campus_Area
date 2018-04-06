@@ -4,6 +4,7 @@ package GUI.AnalysisViewFiles;
 
 import Controller.Configurations;
 import Controller.MainController;
+import Model.MapModel.CampusMap;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -151,7 +152,8 @@ public class MenuPanel extends JPanel {
             changeMapEditorButton(BUTTON_NORMAL_STAGE);
         }
         else{
-
+            CampusMap.getCampusMap().saveCampusMap();
+            CampusMap.getCampusMap().InitializeNodeConnections();
             controller.mainView.analysisMenu.mapPanel.setDrawMode(MapPanel.PAINT_NORMAL);
             changeMapEditorButton(BUTTON_MAP_EDITOR_STAGE);
         }
