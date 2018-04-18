@@ -1,5 +1,9 @@
 package Model.MapModel;
 
+import Model.DijkstraModel.Algorithm;
+import Model.DijkstraModel.Graph;
+import Model.DijkstraModel.GraphInitializer;
+import Model.DijkstraModel.Vertex;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -8,11 +12,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class CampusMap {
     public Node[][] nodes;
     public static int xDimension = 800;
     public static int yDimension = 500;
+    public Graph graph;
 
     private static CampusMap map;
 
@@ -30,6 +37,7 @@ public class CampusMap {
         this.nodes = new Node[xDimension][yDimension];
 
         InitializeMap();
+
     }
 
     public void saveCampusMap(){
@@ -141,15 +149,49 @@ public class CampusMap {
     }
 
     public boolean checkValues(int x,int y){
-        return x>0&&y>0&&x<xDimension&&y<yDimension;
+        return x>0 && y>0 && x<xDimension && y<yDimension;
     }
 
+    public void InitializeGraph(){
+        GraphInitializer graphInitializer = new GraphInitializer(nodes);
+        graph =  graphInitializer.initializeGraph();
+    }
 
-    public Path findPath(int beginX,int beginY,int endX,int endY){
+    public Path findPath(int x1, int y1, int x2, int y2){
+
+        Vertex source = get_vertex(x1,y1);
+        Vertex target = get_vertex(x2,y2);
+
+        // if source and destination are buildings
+        if(nodes[x1][y1].nodeState == Node.BUILDING && nodes[x2][y2].nodeState == Node.BUILDING){
+            Algorithm algo = new Algorithm(graph);
+            algo.execute(source);
+            LinkedList<Vertex> path = algo.getPath(target);
+            for (Vertex vertex : path) {
+
+                // TODO: Bu alan Path class'ı implement edildikten sonra değişicek. Şimdilik sadece Print
+
+                System.out.println("(" + vertex.getX() + " , " + vertex.getY() + ")");
+
+            }
+        }
+        else{
+            System.out.println("Invalid Inputs for path finding");
+        }
+
         return null;
     }
 
-
+    private Vertex get_vertex(int x, int y){
+        Vertex vertex = null;
+        for(int i = 0; i < graph.getVertexes().size(); i++){
+            Vertex current = graph.getVertexes().get(i);
+            if(current.getX() == x && current.getY() == y){
+                vertex = current;
+            }
+        }
+        return vertex;
+    }
 
 }
 
