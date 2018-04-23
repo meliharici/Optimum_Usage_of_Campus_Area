@@ -159,6 +159,8 @@ public class CampusMap {
 
     public Path findPath(int x1, int y1, int x2, int y2){
 
+        Path campusPath = new Path();
+
         Vertex source = get_vertex(x1,y1);
         Vertex target = get_vertex(x2,y2);
 
@@ -169,6 +171,7 @@ public class CampusMap {
             LinkedList<Vertex> path = algo.getPath(target);
             for (Vertex vertex : path) {
 
+                campusPath.appendNode(vertex.getX(),vertex.getY());
                 // TODO: Bu alan Path class'ı implement edildikten sonra değişicek. Şimdilik sadece Print
 
                 System.out.println("(" + vertex.getX() + " , " + vertex.getY() + ")");
@@ -179,7 +182,7 @@ public class CampusMap {
             System.out.println("Invalid Inputs for path finding");
         }
 
-        return null;
+        return campusPath;
     }
 
     private Vertex get_vertex(int x, int y){
