@@ -3,6 +3,8 @@ import java.awt.*;
 
 import Controller.*;
 import GUI.*;
+import Model.DijkstraModel.Graph;
+import Model.MapModel.CampusMap;
 
 public class Main {
 
@@ -16,6 +18,16 @@ public class Main {
         controller.mainView = view;
         controller.initialize();
         controller.start();
+
+
+
+
+        /*---------------------------------------------*/
+        // DIJKSTRA TEST
+
+        CampusMap cm = CampusMap.getCampusMap();
+        cm.InitializeGraph();
+        cm.findPath(305,165,270,160);
 
 
     }

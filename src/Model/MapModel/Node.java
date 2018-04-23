@@ -39,4 +39,8 @@ public class Node {
         n.buildingCode = buildingCode;
         return n;
     }
+
+    public int getBuildingCode(){
+        return this.buildingCode;
+    }
 }

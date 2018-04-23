@@ -299,8 +299,13 @@ public class MapPanel extends JPanel {
         if(paintMode == PAINT_MAPEDITOR){
             switch(mapEditorMode){
                 case DEFAULT_MODE:
+<<<<<<< HEAD
                     System.out.println("Pressed : "+this.mouseNodeX+","+this.mouseNodeY);
                     System.out.println("Node is = "+nodes[this.mouseNodeX][this.mouseNodeY].nodeState);
+=======
+                    System.out.println("Pressed : " + this.mouseNodeX+ " " + this.mouseNodeY);
+                    System.out.println("TYPE: " + nodes[this.mouseNodeX][this.mouseNodeY].nodeState);
+>>>>>>> master
                     break;
                 case BUILDING_MODE:
                     nodes[mouseNodeX][mouseNodeY].nodeState = Node.BUILDING;
