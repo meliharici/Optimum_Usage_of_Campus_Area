@@ -4,6 +4,7 @@ package GUI.AnalysisViewFiles;
 
 import Controller.Configurations;
 import Controller.MainController;
+import Model.CampusTime;
 import Model.MapModel.CampusMap;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
 import javax.imageio.ImageIO;
@@ -214,7 +215,7 @@ public class MenuPanel extends JPanel {
     }
 
     private void simulate(){
-        setTimeOnController();
+        getTimeOnController ();
         MainController.getInstance().startSimulation();
         System.out.print("Sim start from simulateButtonEvent()");
     }
@@ -232,6 +233,7 @@ public class MenuPanel extends JPanel {
             return;
         }
         */
+
         MainController controller = MainController.getInstance();
 
         if(controller.isSimulationRunning){
@@ -246,9 +248,10 @@ public class MenuPanel extends JPanel {
         else if(generateButtonState == BUTTON_GENERATE_STATE){
             changeGenerateButton(BUTTON_DRAWSKETCH_STATE);
 
-            setTimeOnController();
+            getTimeOnController();
             controller.drawData();
         }
+
     }
 
     private void generateSketch(){
@@ -262,15 +265,11 @@ public class MenuPanel extends JPanel {
     }
 
 
-    private void setTimeOnController(){
+    private CampusTime getTimeOnController (){
         String day = (String) mb1.combos.get(0).getSelectedItem();
         int hour = Integer.valueOf(((String) mb1.combos.get(1).getSelectedItem()));
         int min = Integer.valueOf(((String) mb1.combos.get(2).getSelectedItem()));
-
-        System.out.println(day + " " + hour + ":" + min);
-
-        // TODO: Update Controller Correspondingly
-
+        return new CampusTime(hour, min, day);
     }
 
 
