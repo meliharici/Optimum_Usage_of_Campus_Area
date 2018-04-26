@@ -40,6 +40,11 @@ public class MapPanel extends JPanel {
     public static final int WALL_MODE = 3;
     public static final int EMPTY_MODE = 4;
 
+    public static final Color BUILDING_COLOR = new Color(200,244,124);
+    public static final Color ROAD_COLOR = new Color(152,200,240);
+    public static final Color WALL_COLOR = new Color(52,23,124);
+
+
 
 
     public MapPanel(int WIDTH, int HEIGHT) {
@@ -234,7 +239,11 @@ public class MapPanel extends JPanel {
 
         if(isMouseOnNode && mapEditorMode!=DEFAULT_MODE){
             if(nodes[mouseNodeX][mouseNodeY].nodeState == Node.EMPTY){
-                g.setColor(Color.YELLOW);
+                switch(mapEditorMode){
+                    case BUILDING_MODE:g.setColor(BUILDING_COLOR);break;
+                    case ROAD_MODE:g.setColor(ROAD_COLOR);break;
+                    case WALL_MODE:g.setColor(WALL_COLOR);break;
+                }
             }
             else{
                 g.setColor(Color.RED);
@@ -249,15 +258,15 @@ public class MapPanel extends JPanel {
                 g.drawPolygon(xCoords,yCoords,4);
                 break;
             case Node.ROAD:
-                g.setColor(Color.CYAN);
+                g.setColor(ROAD_COLOR);
                 g.fillPolygon(xCoords,yCoords,4);
                 break;
             case Node.WALL:
-                g.setColor(Color.GRAY);
+                g.setColor(WALL_COLOR);
                 g.fillPolygon(xCoords,yCoords,4);
                 break;
             case Node.BUILDING:
-                g.setColor(Color.GREEN);
+                g.setColor(BUILDING_COLOR);
                 g.fillPolygon(xCoords,yCoords,4);
                 break;
         }
