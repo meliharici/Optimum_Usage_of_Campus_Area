@@ -118,6 +118,16 @@ public class AnalysisView extends JPanel{
         this.repaint();
     }
 
+    public void mouseReleased(double x,double y){
+        this.mapPanel.mapReleased(x,y);
+        this.repaint();
+    }
+
+    public void mouseClicked(double x , double y ){
+        this.mapPanel.mapClicked(x,y);
+        this.repaint();
+    }
+
     public void MouseZoomed(double zoomFactor){
         this.mapPanel.mapZoomed(zoomFactor);
         this.repaint();
@@ -146,6 +156,14 @@ class AnalysisMenuMouseHandler extends MouseAdapter {
 
     public void mousePressed(MouseEvent e){
         this.view.mousePressed(e.getX(),e.getY());
+    }
+
+    public void mouseReleased(MouseEvent e){
+        this.view.mouseReleased(e.getX(),e.getY());
+    }
+
+    public void mouseClicked(MouseEvent e){
+        this.view.mouseClicked(e.getX(),e.getY());
     }
 
     public void mouseWheelMoved(MouseWheelEvent e){

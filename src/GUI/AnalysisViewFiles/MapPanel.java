@@ -10,10 +10,12 @@ import Model.MapModel.PointOfInterest;
 import jdk.nashorn.internal.runtime.arrays.ArrayIndex;
 
 import java.awt.*;
+import java.util.ArrayList;
 import javax.swing.*;
 
 public class MapPanel extends JPanel {
 
+    private PoiPanel poiPanel;
     private CampusData campusData;
     private CampusMap map;
     private int width,height;
@@ -177,9 +179,6 @@ public class MapPanel extends JPanel {
         }
     }
 
-
-
-
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -200,22 +199,8 @@ public class MapPanel extends JPanel {
         repaint();
     }
 
-    public Polygon getNodePolygon(int x,int y,double finalLength){
-        return getNodePolygon(x,y,finalLength,0);
-    }
 
-    public Polygon getNodePolygon(int x,int y,double finalLength,double size){
-        int[] xCoords = new int[4];
-        int[] yCoords = new int[4];
 
-        xCoords[0] = xCoords[3] = (int)((x-size)*finalLength+this.x);
-        xCoords[1] = xCoords[2] = (int)((x+1+size)*finalLength+this.x);
-
-        yCoords[0] = yCoords[1] = (int)((y-size)*finalLength+this.y);
-        yCoords[2] = yCoords[3] = (int)((y+1+size)*finalLength+this.y);
-
-        return new Polygon(xCoords,yCoords,4);
-    }
 
     private void paintMapEditor(Graphics g){
 
@@ -231,22 +216,26 @@ public class MapPanel extends JPanel {
 
                 }
                 else{
-
-                    Polygon p = getNodePolygon(i,j,finalLength);
-
                     Node[][] nodes = CampusMap.getCampusMap().nodes;
-
                     boolean isMouseOnNode = i==this.mouseNodeX && j==this.mouseNodeY;
-                    drawNode(g,nodes[i][j],p,isMouseOnNode);
+                    drawNode(g,nodes[i][j],isMouseOnNode);
                 }
 
 
             }
         }
+        drawPOIs(g);
+
+        if(isMouseHeld&&heldPOI != null){
+            drawPOIArea(g,heldPOI);
+        }
+
         repaint();
     }
 
-    public void drawNode(Graphics g,Node n,Polygon p,boolean isMouseOnNode){
+
+    public void drawNode(Graphics g,Node n,boolean isMouseOnNode){
+        Polygon p = getNodePolygon(n,0);
         Node[][] nodes = CampusMap.getCampusMap().nodes;
 
         if(isMouseOnNode && mapEditorMode!=DEFAULT_MODE){
@@ -280,65 +269,51 @@ public class MapPanel extends JPanel {
                 g.fillPolygon(p);
                 break;
             case Node.POI:
-                PointOfInterest poi = null;
-
-                if(n instanceof PointOfInterest){
-                    poi = (PointOfInterest) n;
-                    g.setColor(POI_AREA_COLOR);
-                    double finalLength = (Node.NODE_SIZE*zoomFactor);
-                    Polygon poiPoly = getNodePolygon(poi.xCoords,poi.yCoords,finalLength,poi.size);
-                    g.fillPolygon(poiPoly);
-                }
-                else{
-                }
 
                 g.setColor(POI_COLOR);
                 g.fillPolygon(p);
                 break;
         }
-
     }
 
-    public void drawNode(Graphics g,Node n,int[] xCoords,int[] yCoords,boolean isMouseOnNode){
-        Node[][] nodes = CampusMap.getCampusMap().nodes;
+    public Polygon getNodePolygon(Node n,double size){
+        int x = n.xCoords;
+        int y = n.yCoords;
 
-        if(isMouseOnNode && mapEditorMode!=DEFAULT_MODE){
-            if(nodes[mouseNodeX][mouseNodeY].nodeState == Node.EMPTY){
-                switch(mapEditorMode){
-                    case POI_MODE:g.setColor(POI_COLOR);break;
-                    case ROAD_MODE:g.setColor(ROAD_COLOR);break;
-                    case WALL_MODE:g.setColor(WALL_COLOR);break;
-                }
-            }
-            else{
-                g.setColor(Color.RED);
-            }
-            g.fillPolygon(xCoords,yCoords,4);
-            return;
-        }
+        double finalLength = (Node.NODE_SIZE*zoomFactor);
 
-        switch(n.nodeState){
-            case Node.EMPTY:
-                g.setColor(Color.BLACK);
-                g.drawPolygon(xCoords,yCoords,4);
-                break;
-            case Node.ROAD:
-                g.setColor(ROAD_COLOR);
-                g.fillPolygon(xCoords,yCoords,4);
-                break;
-            case Node.WALL:
-                g.setColor(WALL_COLOR);
-                g.fillPolygon(xCoords,yCoords,4);
-                break;
-            case Node.POI:
-                g.setColor(POI_COLOR);
-                g.fillPolygon(xCoords,yCoords,4);
-                break;
-        }
+        int[] xCoords = new int[4];
+        int[] yCoords = new int[4];
 
+        xCoords[0] = xCoords[3] = (int)((x-size)*finalLength+this.x);
+        xCoords[1] = xCoords[2] = (int)((x+1+size)*finalLength+this.x);
+
+        yCoords[0] = yCoords[1] = (int)((y-size)*finalLength+this.y);
+        yCoords[2] = yCoords[3] = (int)((y+1+size)*finalLength+this.y);
+
+        return new Polygon(xCoords,yCoords,4);
     }
+
+    public void drawPOIs(Graphics g){
+        ArrayList<PointOfInterest> pois = CampusMap.getCampusMap().pois;
+
+        for(int i = 0;i<pois.size();i++){
+            PointOfInterest poi = pois.get(i);
+            drawPOIArea(g,poi);
+            boolean isMouseOnNode = poi.xCoords==this.mouseNodeX && poi.yCoords==this.mouseNodeY;
+            drawNode(g,poi,isMouseOnNode);
+        }
+    }
+
+    public void drawPOIArea(Graphics g,PointOfInterest poi){
+        g.setColor(POI_AREA_COLOR);
+        Polygon poiPoly = getNodePolygon(poi,poi.size);
+        g.fillPolygon(poiPoly);
+    }
+
 
     public void mapDragged(double x,double y){
+
         if(mapEditorMode == DEFAULT_MODE){
             double xDiff = oldMouseX-x;
             double yDiff = oldMouseY-y;
@@ -352,7 +327,16 @@ public class MapPanel extends JPanel {
         }
         else{
             findMouseNode(x,y);
-            placeNode(x,y);
+
+            Node[][] nodes = CampusMap.getCampusMap().nodes;
+            if(mapEditorMode != POI_MODE){
+                placeNode(x,y);
+            }
+            if(heldPOI!=null&&isMouseHeld){
+                heldPOI.xCoords = mouseNodeX;
+                heldPOI.yCoords = mouseNodeY;
+            }
+
         }
 
     }
@@ -373,28 +357,69 @@ public class MapPanel extends JPanel {
         }
     }
 
+    public void mapClicked(double x,double y){
+        Node node = getNodeAt(mouseNodeX,mouseNodeY);
+
+        if(pressX == x && pressY == y){
+            if(mapEditorMode==POI_MODE&&node.nodeState == Node.POI){
+                Node[][] nodes = CampusMap.getCampusMap().nodes;
+
+                System.out.println("Pressed POI");
+                System.out.println(mouseNodeX+" - "+mouseNodeY);
+
+                Node n = nodes[mouseNodeX][mouseNodeY];
+                if(n instanceof PointOfInterest){
+                    if(poiPanel != null){
+                        if(poiPanel.isVisible() == true){
+                            poiPanel.poiFrame.dispose();
+                        }
+                    }
+
+                    PointOfInterest poi = (PointOfInterest) nodes[mouseNodeX][mouseNodeY];
+                    poiPanel = new PoiPanel(poi);
+                }
+                else{
+                    System.out.println("Should be point of interest but is not");
+                }
+
+            }
+        }
+    }
+
+    boolean isMouseHeld = false;
+    PointOfInterest heldPOI = null;
+    Node previousNode = null;
+    double pressX,pressY;
+
     public void mapPressed(double x,double y){
+        isMouseHeld = true;
+        pressX = x;
+        pressY = y;
         Node node = getNodeAt(mouseNodeX,mouseNodeY);
 
         if(mapEditorMode==POI_MODE&&node.nodeState == Node.POI){
+            heldPOI = (PointOfInterest) node;
             Node[][] nodes = CampusMap.getCampusMap().nodes;
 
-            System.out.println("Pressed POI");
-            System.out.println(mouseNodeX+" - "+mouseNodeY);
-
-            Node n = nodes[mouseNodeX][mouseNodeY];
-            if(n instanceof PointOfInterest){
-                PointOfInterest poi = (PointOfInterest) nodes[mouseNodeX][mouseNodeY];
-                PoiPanel poiHandler = new PoiPanel(poi);
-            }
-            else{
-                System.out.println("Should be point of interest but is not");
-            }
-
+            nodes[mouseNodeX][mouseNodeY] = new Node(Node.EMPTY,mouseNodeX,mouseNodeY);
         }
         else{
             placeNode(x,y);
         }
+    }
+
+    public void mapReleased(double x,double y){
+        Node[][] nodes = CampusMap.getCampusMap().nodes;
+
+        if(heldPOI != null && isMouseHeld){
+            heldPOI.xCoords = mouseNodeX;
+            heldPOI.yCoords = mouseNodeY;
+            nodes[mouseNodeX][mouseNodeY] = heldPOI;
+        }
+
+        isMouseHeld = false;
+        heldPOI = null;
+
     }
 
     public void placeNode(double x,double y){
@@ -423,8 +448,7 @@ public class MapPanel extends JPanel {
                     System.out.println("Placed Wall");
                     break;
                 case EMPTY_MODE:
-                    nodes[mouseNodeX][mouseNodeY].nodeState = Node.EMPTY;
-                    System.out.println("Cleared Node");
+                    CampusMap.getCampusMap().removeNode(mouseNodeX,mouseNodeY);
                     break;
             }
         }

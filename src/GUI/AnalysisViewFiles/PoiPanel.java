@@ -165,6 +165,7 @@ public class PoiPanel extends JPanel {
         applyButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 saveChanges();
+                poiFrame.dispatchEvent(new WindowEvent(poiFrame,WindowEvent.WINDOW_CLOSING));
             }
         });
         buttonPanel.add(applyButton);
@@ -189,10 +190,6 @@ public class PoiPanel extends JPanel {
 }
 
 class PoiPanelMouseHandler extends MouseAdapter{
-
-}
-
-class PoiPanelKeyboardHandler extends KeyAdapter{
 
 }
 

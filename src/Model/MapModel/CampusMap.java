@@ -73,6 +73,8 @@ public class CampusMap {
                 int state = (int)s.getRow(y).getCell(x).getNumericCellValue();
 
                 nodes[x][y].nodeState = state;
+                nodes[x][y].xCoords = x;
+                nodes[x][y].yCoords = y;
                 if(state == Node.POI){
                     nodes[x][y] = new PointOfInterest(x,y);
                 }
@@ -134,22 +136,22 @@ public class CampusMap {
         Sheet s = null;
         try {
             wb = new XSSFWorkbook(new File("Points of Interest.xlsx"));
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        } catch (InvalidFormatException e) {
-            e.printStackTrace();
-        }
-        s = wb.getSheet("Point of Interest");
+            s = wb.getSheet("Point of Interest");
+            int numberOfRows = s.getPhysicalNumberOfRows();
 
-        int numberOfRows = s.getPhysicalNumberOfRows();
+            for(int i = 1; i<numberOfRows; i++){
+                XSSFRow currRow = (XSSFRow) s.getRow(i);
+                PointOfInterest poi = parsePOI(currRow);
+                this.pois.add(poi);
+                this.nodes[poi.xCoords][poi.yCoords] = poi;
+            }
 
-        for(int i = 1; i<numberOfRows; i++){
-            XSSFRow currRow = (XSSFRow) s.getRow(i);
-            PointOfInterest poi = parsePOI(currRow);
-            this.pois.add(poi);
-            this.nodes[poi.xCoords][poi.yCoords] = poi;
+        } catch (Exception e) {
+
         }
+
+
+
     }
 
     public PointOfInterest parsePOI(XSSFRow row){
@@ -318,6 +320,17 @@ public class CampusMap {
                     break;
             }
         }
+    }
+
+    public void removeNode(int x,int y){
+        for(int i = 0;i<pois.size();i++){
+            PointOfInterest poi = pois.get(i);
+
+            if(poi.xCoords == x && poi.yCoords == y){
+                pois.remove(i);
+            }
+        }
+        nodes[x][y] = new Node(Node.EMPTY,x,y);
     }
 
     public void InitializeGraph(){
