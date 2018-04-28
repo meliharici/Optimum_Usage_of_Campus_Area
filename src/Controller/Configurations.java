@@ -26,6 +26,9 @@ public class Configurations {
     public static double INFO_PANEL_WIDTH_RATIO = 0.75;
     public static double INFO_PANEL_HEIGHT_RATIO = 0.15;
 
+    public static int POI_FRAME_WIDTH = 400;
+    public static int POI_FRAME_HEIGHT = 500;
+
     public static int SIMULATION_SPEED = 2000;
 
     public static void initialize() {
