@@ -9,13 +9,8 @@ public class Node {
     public final static int EMPTY = 0;
     public final static int ROAD = 1;
     public final static int WALL = 2;
-    public final static int BUILDING = 4;
+    public final static int POI = 4;
     public int nodeState = 0;
-
-    public final static int NOT_A_BUILDING = 0;
-    public final static int EF = 1;
-    public final static int FEAS = 2;
-    public int buildingCode = 0;
 
     public int xCoords,yCoords = -1; //-1 stands for unitialized
 
@@ -31,16 +26,9 @@ public class Node {
 
     public Node(int nodeState,int xCoords,int yCoords){
         this.nodeState = nodeState;
+        this.xCoords = xCoords;
+        this.yCoords = yCoords;
         connections = new ArrayList<double[]>();
     }
 
-    public static Node Building(int buildingCode,int xCoords,int yCoords){
-        Node n = new Node(4,xCoords,yCoords);
-        n.buildingCode = buildingCode;
-        return n;
-    }
-
-    public int getBuildingCode(){
-        return this.buildingCode;
-    }
 }

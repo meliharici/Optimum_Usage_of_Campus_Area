@@ -19,7 +19,7 @@ public class GraphInitializer {
     public Graph initializeGraph(){
         for(int i = 0; i < nodes.length; i++){
             for(int j = 0; j < nodes[0].length; j++){
-                if(nodes[i][j].nodeState == Node.ROAD || nodes[i][j].nodeState == Node.BUILDING){  // if road or building
+                if(nodes[i][j].nodeState == Node.ROAD || nodes[i][j].nodeState == Node.POI){  // if road or building
                     Vertex v = new Vertex(i,j);
                     vertices.add(v);
                 }
@@ -31,7 +31,7 @@ public class GraphInitializer {
             for(int k = 0; k < connections.size(); k++){
                 int targetX = (int) (connections.get(k)[0]);
                 int targetY = (int) (connections.get(k)[1]);
-                if(nodes[targetX][targetY].nodeState == Node.ROAD || nodes[targetX][targetY].nodeState == Node.BUILDING){ //road or building
+                if(nodes[targetX][targetY].nodeState == Node.ROAD || nodes[targetX][targetY].nodeState == Node.POI){ //road or building
                     double weight = connections.get(k)[2];
                     Vertex target = null;
                     for(int m = 0; m < vertices.size(); m++){
