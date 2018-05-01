@@ -1,11 +1,15 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 import Controller.*;
 import GUI.*;
+import Model.Course;
+import Model.DataReader;
 import Model.DijkstraModel.Graph;
 import Model.MapModel.CampusMap;
 import Model.MapModel.Path;
+import Model.Student;
 
 public class Main {
 
@@ -20,11 +24,42 @@ public class Main {
         controller.initialize();
         controller.start();
 
-        testStuff();
+
+
+        //testStuff();
+
+        testStuff_dataread();
 
 
 
     }
+
+    public static void testStuff_dataread(){
+        DataReader reader = new DataReader();
+        String course_path = "data/Courses.csv";
+        String student_path = "data/Students.csv";
+
+        // Fill Courses
+        reader.readCourses(course_path);
+
+        // Fill Students
+        reader.readStudents(student_path);
+
+        /*
+        * WARNING: Order is important here. Courses must be filled before Students!
+        * */
+
+        ArrayList<Student> students = reader.getStudents();
+        System.out.println("Number of Students : " + students.size());
+
+        // Choose an example student to test.
+        ArrayList<Course> fall_courses = students.get(0).get_fall_courses();
+        for(int i = 0; i < fall_courses.size(); i++){
+            System.out.println(fall_courses.get(i).getSemester() + "  " + fall_courses.get(i).getCourse_name() + " " + fall_courses.get(i).getCourse_no());
+        }
+
+    }
+
 
     public static void testStuff(){
         CampusMap cm = CampusMap.getCampusMap();

@@ -17,9 +17,175 @@ import java.util.Date;
 public class DataReader {
 
     BufferedReader br = null;
+    public ArrayList<Course> courses;
+    public ArrayList<Student> students;
+    private static final String splitCharacter = ",";
 
     public DataReader() {
 
+        courses = new ArrayList<>();
+        students = new ArrayList<>();
+    }
+
+
+    // 201710,MATH,104,A,Çarşamba,10:40,12:30,CK.EF_AB1.238
+    public void readCourses(String fileDir){
+        String file_path = fileDir;
+        String line = "";
+        try {
+            br = new BufferedReader(new FileReader(file_path));
+            boolean headpassed = false;
+            while ((line = br.readLine()) != null) {
+                if(headpassed){
+                    if(line.split(splitCharacter).length == 8){
+                        int semester = Integer.parseInt(line.split(splitCharacter)[0]);
+                        String course_name = line.split(splitCharacter)[1];
+                        String course_no = line.split(splitCharacter)[2];
+                        String partition = line.split(splitCharacter)[3];
+                        String day = line.split(splitCharacter)[4];
+                        String starting_time = line.split(splitCharacter)[5];
+                        String finishing_time = line.split(splitCharacter)[6];
+                        String room_code = line.split(splitCharacter)[7];
+                        Course c = new Course(semester, course_name, partition, course_no, day, room_code, starting_time, finishing_time);
+                        courses.add(c);
+                    }
+                }
+                headpassed = true;
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+
+
+
+    /*
+    *
+    *   Student IDs goes like 1,2,3,4,5,......
+    *   I added students to the students array list by looking IDs.
+    *   For each iteration, checked if (current_id == size(students)).
+    *   if not, add a new student object into the array list.
+    *   Otherwise, just updated the student object at index (current_id - 1)
+    *
+    * */
+
+    public void readStudents(String fileDir){
+        String file_path = fileDir;
+        String line = "";
+        try {
+            br = new BufferedReader(new FileReader(file_path));
+            boolean headpassed = false;
+            while ((line = br.readLine()) != null) {
+                if(headpassed){
+                    if(line.split(splitCharacter).length == 6){
+                        int semester = Integer.parseInt(line.split(splitCharacter)[0]);
+                        int id = Integer.parseInt(line.split(splitCharacter)[1]);
+                        String course_name = line.split(splitCharacter)[2];
+                        String course_no = line.split(splitCharacter)[3];
+                        String partition = line.split(splitCharacter)[4];
+
+                        //System.out.println("Semester : " + semester + "  course_name : " + course_name + " course_no : " + course_no + "  partition : " + partition);
+
+                        Course c = getCourse(semester, course_name, course_no, partition);
+
+                        if(c != null){
+                            // students already added
+                            if(id == students.size()){
+                                students.get(id - 1).addCourse(c);
+                            }
+                            else{
+                                Student student = new Student(id);
+                                student.addCourse(c);
+                                students.add(student);
+                            }
+                        }
+                        else{
+                            System.out.println("Error : Course could not found!");
+                        }
+                    }
+                }
+                headpassed = true;
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
+
+    public ArrayList<Course> getCourses() {
+        return courses;
+    }
+
+    public ArrayList<Student> getStudents() {
+        return students;
+    }
+
+
+
+    public Course getCourse(int semester, String courseName, String course_no , String partition ){
+        Course course = null;
+        for(int i = 0; i < courses.size(); i++){
+            Course c = courses.get(i);
+            if(c.semester == semester && c.course_name.equals(courseName) && c.course_no.equals(course_no) && c.partition.equals(partition)){
+                course = c;
+                break;
+            }
+        }
+        return course;
+    }
+
+
+
+    // BELOW LINES WILL BE DELETED!!!
+    /*----------------------------------------------------------------*/
+
+
+    public ArrayList<LocationData> locationsAtFile(String fileDir) {
+        ArrayList<LocationData> locations = new ArrayList<>();
+        String file_path = fileDir;
+        String line = "";
+        try {
+            br = new BufferedReader(new FileReader(file_path));
+            while ((line = br.readLine()) != null) {
+                // In each line of .csv file; first element is date, second element is X coordinate, third element is Y coordinate
+                LocationData ld = new LocationData(getDate((line.split(splitCharacter)[0])), Double.parseDouble(line.split(splitCharacter)[1]), Double.parseDouble(line.split(splitCharacter)[2]));
+                locations.add(ld);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return locations;
     }
 
     public ArrayList<LocationData> locationsBetween(String path, Date starting_date, Date finishing_date){
@@ -71,33 +237,7 @@ public class DataReader {
         return allLocations;
     }
 
-    public ArrayList<LocationData> locationsAtFile(String fileDir) {
-        ArrayList<LocationData> locations = new ArrayList<>();
-        String file_path = fileDir;
-        String line = "";
-        String splitCharacter = ";";
-        try {
-            br = new BufferedReader(new FileReader(file_path));
-            while ((line = br.readLine()) != null) {
-                // In each line of .csv file; first element is date, second element is X coordinate, third element is Y coordinate
-                LocationData ld = new LocationData(getDate((line.split(splitCharacter)[0])), Double.parseDouble(line.split(splitCharacter)[1]), Double.parseDouble(line.split(splitCharacter)[2]));
-                locations.add(ld);
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (br != null) {
-                try {
-                    br.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return locations;
-    }
+
 
     public Date getDate(String date_string) {
         Date date = null;
