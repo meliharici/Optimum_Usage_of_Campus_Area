@@ -22,6 +22,11 @@ public class Main {
 
         controller.mainView = view;
         controller.initialize();
+
+        StudentController studentController = new StudentController();
+        studentController.loadData();
+
+        controller.studentController = studentController;
         controller.start();
 
 
@@ -53,9 +58,10 @@ public class Main {
         System.out.println("Number of Students : " + students.size());
 
         // Choose an example student to test.
-        ArrayList<Course> fall_courses = students.get(0).get_fall_courses();
+        ArrayList<Course> fall_courses = students.get(15).get_fall_courses();
         for(int i = 0; i < fall_courses.size(); i++){
-            System.out.println(fall_courses.get(i).getSemester() + "  " + fall_courses.get(i).getCourse_name() + " " + fall_courses.get(i).getCourse_no());
+            System.out.println(fall_courses.get(i).getSemester() + "  " + fall_courses.get(i).getCourse_name() + " " + fall_courses.get(i).getCourse_no()+" "
+            +fall_courses.get(i).getBuilding());
         }
 
     }

@@ -1,16 +1,11 @@
 package Model;
 
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.File;
 import java.util.Date;
 
 
@@ -33,7 +28,7 @@ public class DataReader {
         String file_path = fileDir;
         String line = "";
         try {
-            br = new BufferedReader(new FileReader(file_path));
+            br = new BufferedReader(new InputStreamReader(new FileInputStream(file_path),"utf-8"));
             boolean headpassed = false;
             while ((line = br.readLine()) != null) {
                 if(headpassed){
@@ -42,7 +37,7 @@ public class DataReader {
                         String course_name = line.split(splitCharacter)[1];
                         String course_no = line.split(splitCharacter)[2];
                         String partition = line.split(splitCharacter)[3];
-                        String day = line.split(splitCharacter)[4];
+                        int day = CampusTime.getDayTr(line.split(splitCharacter)[4]);
                         String starting_time = line.split(splitCharacter)[5];
                         String finishing_time = line.split(splitCharacter)[6];
                         String room_code = line.split(splitCharacter)[7];
@@ -83,6 +78,7 @@ public class DataReader {
     public void readStudents(String fileDir){
         String file_path = fileDir;
         String line = "";
+        int notFoundCourse = 0;
         try {
             br = new BufferedReader(new FileReader(file_path));
             boolean headpassed = false;
@@ -111,12 +107,13 @@ public class DataReader {
                             }
                         }
                         else{
-                            System.out.println("Error : Course could not found!");
+                            notFoundCourse ++;
                         }
                     }
                 }
                 headpassed = true;
             }
+            System.out.println("Not found course number : "+notFoundCourse);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

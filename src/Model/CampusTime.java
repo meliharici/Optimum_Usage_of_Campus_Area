@@ -11,10 +11,10 @@ public class CampusTime {
     static final int SUNDAY = 7;
 
     int hour, min;
-    String day;
+    int day;
 
     public CampusTime(int hour, int min, String day){
-        this.day = day;
+        this.day = getDayEng(day);
         this.hour = hour;
         this.min = min;
     }
@@ -23,7 +23,7 @@ public class CampusTime {
 
     public int getMin(){ return min; }
 
-    public int getDay(){
+    public static int getDayEng(String day){
         int day_code = -1;
         switch (day) {
             case "Monday":
@@ -49,6 +49,36 @@ public class CampusTime {
                 break;
             default:
                 System.out.println("Wrong Day Value");
+                return -1;
+        }
+        return day_code;
+    }
+
+    public static int getDayTr(String day){
+        int day_code = -1;
+        switch (day) {
+            case "Pazartesi":
+                day_code = MONDAY;
+                break;
+            case "Salı":
+                day_code = TUESDAY;
+                break;
+            case "Çarşamba":
+                day_code = WEDNESDAY;
+                break;
+            case "Perşembe":
+                day_code = THURSDAY;
+                break;
+            case "Cuma":
+                day_code = FRIDAY;
+                break;
+            case "Cumartesi":
+                day_code = SATURDAY;
+                break;
+            case "Pazar":
+                day_code = SUNDAY;
+                break;
+            default:
                 return -1;
         }
         return day_code;

@@ -8,12 +8,13 @@ public class Course {
 
     int semester;
     String  course_no;
-    String course_name, partition, day, room_code;
+    String course_name, partition, room_code;
+    int day;
     String starting_time, finishing_time;
 
     String building, room;
 
-    public Course(int semester, String course_name, String partition, String course_no, String day, String room_code, String starting_time, String finishing_time){
+    public Course(int semester, String course_name, String partition, String course_no, int day, String room_code, String starting_time, String finishing_time){
         this.semester = semester;
         this.course_name = course_name;
         this.partition = partition;
@@ -26,7 +27,7 @@ public class Course {
     }
 
     private void parse_room_code(){
-        if(room_code != null && room_code.length() > 10){
+        if(room_code != null && room_code.length()<2&& room_code.length() > 10){
             String remaining = room_code;
             int inds1 = remaining.indexOf(separator);
             String location = remaining.substring(0, inds1);
@@ -36,14 +37,14 @@ public class Course {
                 building = remaining.substring(0, inds2);
                 remaining = remaining.substring(inds2 + 1);
                 room = remaining;
-                System.out.println("Location : " + location + "  Building : " + building + "  Room : " + room);
+                //System.out.println("Location : " + location + "  Building : " + building + "  Room : " + room);
             }
             else{
-                System.out.println("Error : Room Code -> Outside of the Campus");
+                //System.out.println("Error : Room Code -> Outside of the Campus");
             }
         }
         else{
-            System.out.println("Error : Invalid Argument for Room-Code Parsing.");
+            //System.out.println("Error : Invalid Argument for Room-Code Parsing.");
         }
     }
 
@@ -63,7 +64,7 @@ public class Course {
         return partition;
     }
 
-    public String get_Day() {
+    public int get_Day() {
         return day;
     }
 
