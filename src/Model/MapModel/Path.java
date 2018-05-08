@@ -47,6 +47,30 @@ public class Path {
 
     }
 
+    public Double[] getCurrentNodeOnMap(){
+        Double[] location = new Double[2];
+
+        if(currentNodeIndex == pathOfNodes.size()-1){
+            location[0] = (double)pathOfNodes.get(currentNodeIndex)[0];
+            location[1] = (double)pathOfNodes.get(currentNodeIndex)[1];
+
+            return location;
+        }
+
+        double ratio = getPathProgressRatio();
+
+        int[] currentNode = getCurrentNode();
+        int[] nextNode = getNextNode();
+
+        double xDiff = nextNode[0] - currentNode[0];
+        double yDiff = nextNode[1] - currentNode[1];
+
+        location[0] = currentNode[0] + xDiff*ratio;
+        location[1] = currentNode[1] + yDiff*ratio;
+
+        return location;
+    }
+
     public void calculateLength(){
         pathLength = new ArrayList<Double>();
 

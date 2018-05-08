@@ -12,6 +12,8 @@ public class PointOfInterest extends Node{
     public static final int TYPE_FREEZONE = 1;
     public static final int TYPE_MAINFOOD = 2;
     public static final int TYPE_SNACKFOOD = 3;
+    public static final int TYPE_ENTERANCE = 4;
+    public static final int TYPE_STUDYAREA = 5;
 
     public PointOfInterest(int xCoords,int yCoords){
         super(Node.POI,xCoords,yCoords);

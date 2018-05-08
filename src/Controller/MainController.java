@@ -22,6 +22,8 @@ public class MainController {
     public boolean isSimulationRunning = false;
     public boolean isSketchGenerated = false;
 
+    public StudentController studentController;
+
     public CampusData campusData;
 
     Date simulation_start;
@@ -68,7 +70,7 @@ public class MainController {
 
 
     public  void startSimulation(){
-        simulator = new Simulator(startingDate,finishingDate);
+        simulator = new Simulator();
         simulator.start();
         isSimulationRunning = true;
 
@@ -122,7 +124,6 @@ public class MainController {
         if(simulationThread == null) return;
         simulationThread.cancel();
         simulationThread.purge();
-        drawData(startingDate, finishingDate);
         isSimulationRunning = false;
     }
 

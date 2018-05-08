@@ -7,6 +7,8 @@ import Controller.MainController;
 import Model.CampusTime;
 import Model.MapModel.CampusMap;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
+import sun.applet.Main;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -204,7 +206,7 @@ public class MenuPanel extends JPanel {
     private void simulateButtonEvent(){
         MainController controller = MainController.getInstance();
         if(simulateButtonState == BUTTON_SIMULATE_STATE){
-            if(checkDateInputs() == false) return;
+            //if(checkDateInputs() == false) return;
             changeSimulationButton(BUTTON_SIMULATIONSTOP_STATE);
             simulate();
         }
@@ -215,7 +217,8 @@ public class MenuPanel extends JPanel {
     }
 
     private void simulate(){
-        getTimeOnController ();
+        MainController controller = MainController.getInstance();
+        controller.studentController.initializeStudents(getTimeOnController());
         MainController.getInstance().startSimulation();
         System.out.print("Sim start from simulateButtonEvent()");
     }
@@ -223,7 +226,6 @@ public class MenuPanel extends JPanel {
     private void cancelSimulation(){
         MainController controller = MainController.getInstance();
         controller.cancelSimulation();
-        controller.drawData();
         System.out.print("Sim cancel from simulateButtonEvent()");
     }
 

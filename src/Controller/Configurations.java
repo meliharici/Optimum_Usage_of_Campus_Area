@@ -26,6 +26,13 @@ public class Configurations {
     public static double INFO_PANEL_WIDTH_RATIO = 0.75;
     public static double INFO_PANEL_HEIGHT_RATIO = 0.15;
 
+    public static int SIM_SEMESTER = 201710;
+    public static final int SEMESTER_FALL = 201720;
+    public static final int SEMESTER_SPRING = 201710;
+
+    public static String COURSE_FILEPATH = "data/Courses.csv";
+    public static String STUDENT_FILEPATH = "data/Students.csv";
+
     public static int POI_FRAME_WIDTH = 400;
     public static int POI_FRAME_HEIGHT = 500;
 

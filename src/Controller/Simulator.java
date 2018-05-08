@@ -16,7 +16,13 @@ public class Simulator extends Thread {
     public Date simulationStart;
     public Date simulationEnd;
 
-    public Simulator(Date startingDate,Date finishingDate){
+    private static final int SIMULATION_FREQUENCY = 10;
+
+    public Simulator(){
+
+    }
+
+    public void Simulator_OLD(Date startingDate,Date finishingDate){
         this.startingDate = startingDate;
         this.finishingDate = finishingDate;
 
@@ -25,6 +31,30 @@ public class Simulator extends Thread {
     }
 
     public void run(){
+        while(!isFinished){
+            if(!isPaused){
+
+
+
+                try {
+                    System.out.print("Sleeping for = "+Configurations.SIMULATION_SPEED);
+                    sleep(Configurations.SIMULATION_SPEED);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            else{
+                try {
+                    sleep(20);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        cancel();
+    }
+
+    public void run_old(){
         while(!isFinished){
             if(!isPaused){
                 long startingTime_inmilisec = simulationStart.getTime();

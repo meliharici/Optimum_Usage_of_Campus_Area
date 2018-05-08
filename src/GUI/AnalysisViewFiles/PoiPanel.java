@@ -142,7 +142,7 @@ public class PoiPanel extends JPanel {
         JLabel typeLabel = new JLabel("Select type of POI");
         typePanel.add(typeLabel);
 
-        String[] names = {"Building","Freezone","Food-Main","Food-Snack"};
+        String[] names = {"Building","Freezone","Food-Main","Food-Snack","Enterance","Study-Area"};
         typeDropdown = new JComboBox<>(names);
         typePanel.add(typeDropdown);
 
