@@ -42,7 +42,9 @@ public class DataReader {
                         String finishing_time = line.split(splitCharacter)[6];
                         String room_code = line.split(splitCharacter)[7];
                         Course c = new Course(semester, course_name, partition, course_no, day, room_code, starting_time, finishing_time);
-                        courses.add(c);
+                        if(c.getBuilding()!=null){
+                            courses.add(c);
+                        }
                     }
                 }
                 headpassed = true;

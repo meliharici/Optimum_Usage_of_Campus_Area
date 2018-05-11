@@ -43,6 +43,7 @@ public class MainController {
 
     public MainView mainView;
     public MenuController menuController;
+    public POIController poiController;
 
     public CampusMap campusMap;
 
@@ -63,6 +64,7 @@ public class MainController {
             campusData.campusMapImage = campusImage;
 
             mainView.setCampusData(campusData);
+            this.poiController = new POIController(CampusMap.getCampusMap().pois);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -117,14 +119,6 @@ public class MainController {
         if(simulator == null) return;
         simulator.cancel();
         simulator = null;
-    }
-
-    public void cancelSimulation2(){
-        System.out.print("Simulation Cancelled");
-        if(simulationThread == null) return;
-        simulationThread.cancel();
-        simulationThread.purge();
-        isSimulationRunning = false;
     }
 
     static BufferedImage deepCopy(BufferedImage bi) {

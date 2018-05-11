@@ -27,7 +27,7 @@ public class Course {
     }
 
     private void parse_room_code(){
-        if(room_code != null && room_code.length()<2&& room_code.length() > 10){
+        if(room_code != null&&room_code.length()>9&&room_code.contains(separator)){
             String remaining = room_code;
             int inds1 = remaining.indexOf(separator);
             String location = remaining.substring(0, inds1);

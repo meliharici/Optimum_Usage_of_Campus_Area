@@ -4,6 +4,7 @@ import Model.CampusTime;
 import Model.DataReader;
 import Model.Student;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 public class StudentController {
@@ -31,6 +32,14 @@ public class StudentController {
     }
 
     public void simulateStudents(CampusTime simTime,double simSpeed){
+        for(Student s : students){
+            s.act(simTime,simSpeed);
+        }
+    }
 
+    public void paintStudents(Graphics g){
+        for(Student s:students){
+            s.paint(g);
+        }
     }
 }

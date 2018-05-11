@@ -168,10 +168,13 @@ public class MenuPanel extends JPanel {
             case BUTTON_MAP_EDITOR_STAGE:
                 mapEditorButton.setText("CampusMap Editor");
                 mapEditorButtonState = state;
+                AnalysisView.getInstance().mapPanel.mapEditorMode = MapPanel.DEFAULT_MODE;
                 return;
             case BUTTON_NORMAL_STAGE:
                 mapEditorButton.setText("Simulator");
                 mapEditorButtonState = state;
+                AnalysisView.getInstance().requestFocus();
+
                 return;
         }
     }
