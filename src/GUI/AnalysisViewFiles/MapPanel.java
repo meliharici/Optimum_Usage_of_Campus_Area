@@ -17,11 +17,12 @@ public class MapPanel extends JPanel {
 
     private PoiPanel poiPanel;
     private CampusData campusData;
-    private CampusMap map;
     private int width,height;
     private int x = 0;
     private int y = 0;
     private double zoomFactor = 1;
+
+    CampusMap map;
 
 
     private double oldMouseX,oldMouseY;
