@@ -6,12 +6,15 @@ import Model.MapModel.CampusMap;
 import Model.MapModel.Node;
 import Model.MapModel.Path;
 import Model.MapModel.PointOfInterest;
+import sun.applet.Main;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
 
 public class Student {
+    public static final boolean shouldPrint = false;
+
     public ArrayList<Course> courses;
 
     public double locationNodeX,locationNodeY;
@@ -48,6 +51,8 @@ public class Student {
     public Course latestCourse = null;
 
     public PointOfInterest currentPOI = null;
+    public PointOfInterest enterancePOI = null;
+
     public double poiLeaveTime = -1;
 
     private static final int FALL_SEMESTER = 201710;
@@ -160,6 +165,10 @@ public class Student {
                 }
             }
 
+            if(currentTime > startTime-0.2){
+                isOnCampus = true;
+            }
+
             if(currentTime < startTime){
                 hasUpcomingCourse = true;
             }
@@ -267,18 +276,27 @@ public class Student {
 
         double currentTimeEncoded = getDoubleEncodedTime(time.hour,time.min);
 
+        PointOfInterest currentLoc = null;
+        PointOfInterest nextLoc = null;
+        PointOfInterest previousLoc = null;
+
         if(isOnCourse){
             try{
-                PointOfInterest currentLoc = controller.poiController.GetPoiWithName(currentCourse.building);
+                currentLoc = controller.poiController.GetPoiWithName(currentCourse.building);
                 this.locationNodeX = currentLoc.xCoords;
                 this.locationNodeY = currentLoc.yCoords;
                 this.action = ACTION_ATCOURSE;
                 this.nextAction = ACTION_UNDECIDED;
                 this.currentPOI = currentLoc;
+                poiLeaveTime = getCourseEndTime(currentCourse);
                 calculateOffsetOnCurrentPOI();
 
-                System.out.println("--------");
-                System.out.println("At Course = "+currentCourse.course_name);
+                if(shouldPrint){
+                    System.out.println("--------");
+                    System.out.println("At Course = "+currentCourse.course_name);
+                    System.out.println("Leave time = "+poiLeaveTime);
+                }
+
             }
             catch(Exception e){
                 //Exception below should not be handled, it should lead into program crash if occurs for it cannot be fixed with code alone
@@ -291,145 +309,222 @@ public class Student {
             double minsAfterPastCourse = calculatePastCourse(time);
 
             if(hasUpcomingCourse){
-                double minsBetweenCourses = minsAfterPastCourse+minsTillNextCourse;
 
-                //TODO
-                //Calculate the previous location
-                PointOfInterest previousLocation = null;
-                PointOfInterest pastCourseLocation = controller.poiController.GetPoiWithName(pastCourse.building);
-                PointOfInterest nextLocation = controller.poiController.GetPoiWithName(nextCourse.building);
+                if(pastCourse == null){
+                    if(hasUpcomingCourse){
+                        //TODO
+                        //Spawn and walk towards next course if less than 20 mins
+                        if(minsTillNextCourse<20){
+                            isOnCampus = true;
+                            this.enterancePOI = getEnterancePOI();
+                            previousLoc = this.enterancePOI;
+                            action = ACTION_WALKING;
+                            nextAction = ACTION_WAITING;
+                            poiLeaveTime = getCourseStartTime(nextCourse);
+                            nextLoc = MainController.getInstance().poiController.GetPoiWithName(nextCourse.building);
 
-                if(minsBetweenCourses < 15){
-                    previousLocation = controller.poiController.GetPoiWithName(pastCourse.building);
-                    nextLocation = controller.poiController.GetPoiWithName(this.nextCourse.building);
-                }
-                else if(minsAfterPastCourse < 10){
-                    previousLocation = pastCourseLocation;
+                            this.path = map.findPath(previousLoc.xCoords,previousLoc.yCoords,nextLoc.xCoords,nextLoc.yCoords);
+                            double randProgres = rand.nextDouble()/4+(20-minsTillNextCourse)/40;
+                            double pathLength = path.getPathLength();
+                            path.move(pathLength*randProgres);
+                            this.locationNodeX = path.getCurrentNodeOnMap()[0];
+                            this.locationNodeY = path.getCurrentNodeOnMap()[1];
+                            calculateOffsetOnWalking();
 
-                    if(foodState == FOOD_HUNGRY){
-                        System.out.println("Food not eaten");
-                        nextLocation = controller.poiController.getPOIWithType(previousLocation.xCoords,previousLocation.yCoords,PointOfInterest.TYPE_MAINFOOD);
-                    }
-                    else if(foodState == FOOD_EATEN){
-                        nextLocation = getFreePOI(previousLocation);
-                    }
-                    else{
-                        nextLocation = getFreePOI(previousLocation);
+                            if(shouldPrint||true){
+                                System.out.println("--------");
+                                System.out.println("Walking from ("+previousLoc.name+") to ("+nextLoc.name+")");
+                                System.out.println("Walking from ("+previousLoc.xCoords+","+previousLoc.yCoords+") to " +
+                                        "("+nextLoc.xCoords+","+nextLoc.yCoords+")");
+                                System.out.println("Curent location = ("+path.getCurrentNodeOnMap()[0]+","+path.getCurrentNodeOnMap()[1]+")");
+                                System.out.println("Progress = "+path.getPathProgressRatio());
+                            }
+
+                        }
+                        else{
+                        }
+
+
                     }
                 }
                 else{
-                    if(foodState == FOOD_EATING){
-                        previousLocation = controller.poiController.getPOIWithType(pastCourseLocation.xCoords,pastCourseLocation.yCoords,PointOfInterest.TYPE_MAINFOOD);
-                    }
-                    else{
-                        previousLocation = controller.poiController.getPOIWithType(pastCourseLocation.xCoords,pastCourseLocation.yCoords,PointOfInterest.TYPE_FREEZONE);
-                    }
+                    double minsBetweenCourses = minsAfterPastCourse+minsTillNextCourse;
 
-                }
-
-                if(minsTillNextCourse<15){
                     //TODO
-                    //Walk towards next course
-                    //Next action = on course
-                    if(previousLocation != nextLocation){
-                        action = ACTION_WALKING;
-                        nextAction = ACTION_WAITING;
-                        this.path = map.findPath(previousLocation.xCoords,previousLocation.yCoords,nextLocation.xCoords,nextLocation.yCoords);
-                        double randProgres = rand.nextDouble()/2+0.25;
-                        double pathLength = path.getPathLength();
-                        path.move(pathLength*randProgres);
+                    //Calculate the previous location
+                    previousLoc = null;
+                    PointOfInterest pastCourseLocation = controller.poiController.GetPoiWithName(pastCourse.building);
+                    nextLoc = controller.poiController.GetPoiWithName(nextCourse.building);
 
-                        this.locationNodeX = path.getCurrentNodeOnMap()[0];
-                        this.locationNodeY = path.getCurrentNodeOnMap()[1];
+                    if(minsBetweenCourses < 15){
+                        previousLoc = controller.poiController.GetPoiWithName(pastCourse.building);
+                        nextLoc = controller.poiController.GetPoiWithName(this.nextCourse.building);
+                    }
+                    else if(minsAfterPastCourse < 10){
+                        previousLoc = pastCourseLocation;
 
-                        calculateOffsetOnWalking();
-
-
-                        System.out.println("--------");
-                        System.out.println("Walking from ("+previousLocation.name+") to ("+nextLocation.name+")");
-                        System.out.println("Walking from ("+previousLocation.xCoords+","+previousLocation.yCoords+") to " +
-                                "("+nextLocation.xCoords+","+nextLocation.yCoords+")");
-                        System.out.println("Curent location = ("+path.getCurrentNodeOnMap()[0]+","+path.getCurrentNodeOnMap()[1]+")");
-                        System.out.println("Progress = "+path.getPathProgressRatio());
+                        if(foodState == FOOD_HUNGRY){
+                            nextLoc = controller.poiController.getPOIWithType(previousLoc.xCoords,previousLoc.yCoords,PointOfInterest.TYPE_MAINFOOD);
+                        }
+                        else if(foodState == FOOD_EATEN){
+                            nextLoc = getFreePOI(previousLoc);
+                        }
+                        else{
+                            nextLoc = getFreePOI(previousLoc);
+                        }
                     }
                     else{
+                        if(foodState == FOOD_EATING){
+                            previousLoc = controller.poiController.getPOIWithType(pastCourseLocation.xCoords,pastCourseLocation.yCoords,PointOfInterest.TYPE_MAINFOOD);
+                        }
+                        else{
+                            previousLoc = getFreePOI(pastCourseLocation);
+                        }
 
-                        action = ACTION_WAITING;
-                        nextAction = ACTION_ATCOURSE;
-                        this.locationNodeX = previousLocation.xCoords;
-                        this.locationNodeY = previousLocation.yCoords;
-                        poiLeaveTime = getCourseStartTime(nextCourse);
-                        this.currentPOI = previousLocation;
-                        calculateOffsetOnCurrentPOI();
+                    }
+
+                    if(minsTillNextCourse<15){
+                        //TODO
+                        //Walk towards next course
+                        //Next action = on course
+                        if(previousLoc != nextLoc){
+                            action = ACTION_WALKING;
+                            nextAction = ACTION_WAITING;
+                            this.path = map.findPath(previousLoc.xCoords,previousLoc.yCoords,nextLoc.xCoords,nextLoc.yCoords);
+                            double randProgres = rand.nextDouble()/4+((15-minsTillNextCourse)/30);
+                            double pathLength = path.getPathLength();
+                            path.move(pathLength*randProgres);
+
+                            this.locationNodeX = path.getCurrentNodeOnMap()[0];
+                            this.locationNodeY = path.getCurrentNodeOnMap()[1];
+
+                            calculateOffsetOnWalking();
 
 
-                        System.out.println("--------");
-                        System.out.println("Waiting on ("+previousLocation.name+")");
-                        System.out.println("Waiting till = "+poiLeaveTime);
+                            if(shouldPrint){
+                                System.out.println("--------");
+                                System.out.println("Walking from ("+previousLoc.name+") to ("+nextLoc.name+")");
+                                System.out.println("Walking from ("+previousLoc.xCoords+","+previousLoc.yCoords+") to " +
+                                        "("+nextLoc.xCoords+","+nextLoc.yCoords+")");
+                                System.out.println("Curent location = ("+path.getCurrentNodeOnMap()[0]+","+path.getCurrentNodeOnMap()[1]+")");
+                                System.out.println("Progress = "+path.getPathProgressRatio());
+                            }
+
+                        }
+                        else{
+
+                            action = ACTION_WAITING;
+                            nextAction = ACTION_ATCOURSE;
+                            this.locationNodeX = previousLoc.xCoords;
+                            this.locationNodeY = previousLoc.yCoords;
+                            poiLeaveTime = getCourseStartTime(nextCourse);
+                            this.currentPOI = previousLoc;
+                            calculateOffsetOnCurrentPOI();
+
+
+                            if(shouldPrint){
+                                System.out.println("--------");
+                                System.out.println("Waiting on ("+previousLoc.name+")");
+                                System.out.println("Waiting till = "+poiLeaveTime);
+                            }
+
+                        }
+
+                    }
+                    else{
+                        if(minsAfterPastCourse<10){
+
+
+                            action = ACTION_WALKING;
+                            nextAction = ACTION_WAITING;
+                            this.path = map.findPath(previousLoc.xCoords,previousLoc.yCoords,nextLoc.xCoords,nextLoc.yCoords);
+                            double randProgres = rand.nextDouble()/2+0.25;
+                            double pathLength = path.getPathLength();
+                            path.move(pathLength*randProgres);
+                            this.locationNodeX = path.getCurrentNodeOnMap()[0];
+                            this.locationNodeY = path.getCurrentNodeOnMap()[1];
+                            calculateOffsetOnWalking();
+
+
+                            if(shouldPrint){
+                                System.out.println("--------");
+                                System.out.println("Walking from ("+previousLoc.name+") to ("+nextLoc.name+")");
+                                System.out.println("Walking from ("+previousLoc.xCoords+","+previousLoc.yCoords+") to " +
+                                        "("+nextLoc.xCoords+","+nextLoc.yCoords+")");
+                                System.out.println("Mins between courses = "+minsBetweenCourses);
+                                System.out.println("Mins till next Course = "+minsTillNextCourse);
+                                System.out.println("Curent location = ("+path.getCurrentNodeOnMap()[0]+","+path.getCurrentNodeOnMap()[1]+")");
+                                System.out.println("Progress = "+path.getPathProgressRatio());
+                            }
+
+
+                        }
+                        else if(minsAfterPastCourse>=10){
+                            action = ACTION_WAITING;
+                            nextAction = ACTION_UNDECIDED;
+                            this.locationNodeX = previousLoc.xCoords;
+                            this.locationNodeY = previousLoc.yCoords;
+                            this.currentPOI = previousLoc;
+                            this.poiLeaveTime = addTwoEncodedTimes(currentTimeEncoded,rand.nextDouble()/5);
+                            calculateOffsetOnCurrentPOI();
+
+                            if(shouldPrint){
+                                System.out.println("--------");
+                                System.out.println("Waiting at a POI");
+                                System.out.println("POI name = "+this.currentPOI.name);
+                                System.out.println("Mins till next Course = "+minsTillNextCourse);
+                                System.out.println("Current time = "+currentTimeEncoded);
+                                System.out.println("POI leave time  ="+poiLeaveTime);
+                            }
+
+                        }
+
+
                     }
 
                 }
-                else{
-                    if(minsAfterPastCourse<10){
-                        System.out.println("--------");
-                        System.out.println("Walking from ("+previousLocation.name+") to ("+nextLocation.name+")");
-                        System.out.println("Walking from ("+previousLocation.xCoords+","+previousLocation.yCoords+") to " +
-                                "("+nextLocation.xCoords+","+nextLocation.yCoords+")");
-                        System.out.println("Mins between courses = "+minsBetweenCourses);
-                        System.out.println("Mins till next Course = "+minsTillNextCourse);
 
-                        action = ACTION_WALKING;
-                        nextAction = ACTION_WAITING;
-                        this.path = map.findPath(previousLocation.xCoords,previousLocation.yCoords,nextLocation.xCoords,nextLocation.yCoords);
-                        double randProgres = rand.nextDouble()/2+0.25;
-                        double pathLength = path.getPathLength();
-                        path.move(pathLength*randProgres);
-                        this.locationNodeX = path.getCurrentNodeOnMap()[0];
-                        this.locationNodeY = path.getCurrentNodeOnMap()[1];
-                        calculateOffsetOnWalking();
-
-
-                        System.out.println("Curent location = ("+path.getCurrentNodeOnMap()[0]+","+path.getCurrentNodeOnMap()[1]+")");
-                        System.out.println("Progress = "+path.getPathProgressRatio());
-
-                    }
-                    else if(minsAfterPastCourse>=10){
-                        action = ACTION_WAITING;
-                        nextAction = ACTION_UNDECIDED;
-                        this.locationNodeX = previousLocation.xCoords;
-                        this.locationNodeY = previousLocation.yCoords;
-                        this.currentPOI = previousLocation;
-                        this.poiLeaveTime = addTwoEncodedTimes(currentTimeEncoded,rand.nextDouble()/5);
-                        calculateOffsetOnCurrentPOI();
-
-                        System.out.println("--------");
-                        System.out.println("Waiting at a POI");
-                        System.out.println("POI name = "+this.currentPOI.name);
-                        System.out.println("Mins till next Course = "+minsTillNextCourse);
-                        System.out.println("Current time = "+currentTimeEncoded);
-                        System.out.println("POI leave time  ="+poiLeaveTime);
-                    }
-
-
-                }
             }
             else{
-                if(minsAfterPastCourse>10){
-                    //TODO
-                    //Set student to dead
+                if(minsAfterPastCourse>19){
+                    hasUpcomingCourse = false;
+                    isOnCampus = false;
+                    action = ACTION_DISAPPEAR;
                 }
                 else{
-                    //TODO
-                    //Walk to exit
+                    //Walking to exit
+                    hasUpcomingCourse = false;
+                    action = ACTION_WALKING;
+                    nextAction = ACTION_DISAPPEAR;
+
+                    PointOfInterest pastCourseLocation = controller.poiController.GetPoiWithName(pastCourse.building);
+
+                    nextLoc = getEnterancePOI();
+                    previousLoc = pastCourseLocation;
+
+                    this.path = map.findPath(previousLoc.xCoords,previousLoc.yCoords,nextLoc.xCoords,nextLoc.yCoords);
+                    double randProgres = rand.nextDouble()/4+(20-minsAfterPastCourse)/20;
+                    double pathLength = path.getPathLength();
+                    path.move(pathLength*randProgres);
+                    this.locationNodeX = path.getCurrentNodeOnMap()[0];
+                    this.locationNodeY = path.getCurrentNodeOnMap()[1];
+                    calculateOffsetOnWalking();
+
+                    if(shouldPrint||true){
+                        System.out.println("--------");
+                        System.out.println("Walking from ("+previousLoc.name+") to ("+nextLoc.name+")");
+                        System.out.println("Walking from ("+previousLoc.xCoords+","+previousLoc.yCoords+") to " +
+                                "("+nextLoc.xCoords+","+nextLoc.yCoords+")");
+                        System.out.println("Curent location = ("+path.getCurrentNodeOnMap()[0]+","+path.getCurrentNodeOnMap()[1]+")");
+                        System.out.println("Progress = "+path.getPathProgressRatio());
+                    }
+
                 }
             }
 
         }
         else{
-            if(hasUpcomingCourse){
-                //TODO
-                //Spawn and walk towards next course if less than 20 mins
-            }
+
 
         }
     }
@@ -447,6 +542,10 @@ public class Student {
         else{
             return poiController.getPOIWithType(previousLocation.xCoords,previousLocation.yCoords,PointOfInterest.TYPE_STUDYAREA);
         }
+    }
+
+    public PointOfInterest getEnterancePOI(){
+        return MainController.getInstance().poiController.getEnterance();
     }
 
     public double calculatePastCourse(CampusTime time){

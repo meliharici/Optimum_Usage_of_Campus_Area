@@ -44,13 +44,19 @@ public class POIController {
     }
 
 
-    public PointOfInterest getEnterance(double x,double y){
-        CampusMap map = CampusMap.getCampusMap();
+    public PointOfInterest getEnterance(){
+        ArrayList<PointOfInterest> possiblePOIs = new ArrayList<PointOfInterest>();
+        double currentScore = 0;
+        double totalScore = 0;
 
         for(PointOfInterest poi : pois){
-
+            if(poi.type == PointOfInterest.TYPE_ENTERANCE){
+                possiblePOIs.add(poi);
+            }
         }
+        Random rgen = new Random();
+        int randomIndex = rgen.nextInt(possiblePOIs.size());
 
-        return null;
+        return possiblePOIs.get(randomIndex);
     }
 }

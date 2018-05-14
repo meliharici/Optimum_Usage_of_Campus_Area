@@ -36,7 +36,7 @@ public class Configurations {
     public static int POI_FRAME_WIDTH = 400;
     public static int POI_FRAME_HEIGHT = 500;
 
-    public static double SIMULATION_SPEED = 0.3;
+    public static double SIMULATION_SPEED = 0.05;
 
     public static void initialize() {
         loadGuiParameters();
