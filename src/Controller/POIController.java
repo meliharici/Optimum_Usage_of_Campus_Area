@@ -1,9 +1,13 @@
 package Controller;
+import Model.MapModel.CampusMap;
 import Model.MapModel.PointOfInterest;
+import Model.Student;
+
 import java.util.ArrayList;
+import java.util.Random;
 
 public class POIController {
-    private final ArrayList<PointOfInterest> pois;
+    private ArrayList<PointOfInterest> pois;
 
     public POIController(ArrayList<PointOfInterest> pois){
         this.pois = pois;
@@ -19,5 +23,34 @@ public class POIController {
         }
 
         return poi;
+    }
+
+    public PointOfInterest getPOIWithType(double x,double y,int type){
+        CampusMap map = CampusMap.getCampusMap();
+
+        ArrayList<PointOfInterest> possiblePOIs = new ArrayList<PointOfInterest>();
+        double currentScore = 0;
+        double totalScore = 0;
+
+        for(PointOfInterest poi : pois){
+            if(poi.type == type){
+                possiblePOIs.add(poi);
+            }
+        }
+        Random rgen = new Random();
+        int randomIndex = rgen.nextInt(possiblePOIs.size());
+
+        return possiblePOIs.get(randomIndex);
+    }
+
+
+    public PointOfInterest getEnterance(double x,double y){
+        CampusMap map = CampusMap.getCampusMap();
+
+        for(PointOfInterest poi : pois){
+
+        }
+
+        return null;
     }
 }

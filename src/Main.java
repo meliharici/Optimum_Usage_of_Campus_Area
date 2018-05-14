@@ -33,7 +33,7 @@ public class Main {
 
         //testStuff();
 
-        testStuff_dataread();
+        //testStuff_dataread();
 
 
 
@@ -70,7 +70,7 @@ public class Main {
     public static void testStuff(){
         CampusMap cm = CampusMap.getCampusMap();
         cm.InitializeGraph();
-        Path p = cm.findPath(305,165,270,160);
+        Path p = cm.findPath(259,161,269,156);
 
         System.out.println("Simulating movement with speed 0.5");
         for(int i = 0;i<20;i++){

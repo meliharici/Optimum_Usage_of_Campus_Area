@@ -1,7 +1,12 @@
 package Controller;
 
+import GUI.AnalysisViewFiles.AnalysisView;
+import Model.CampusTime;
+import Model.MapModel.CampusMap;
+import Model.Student;
 import sun.applet.Main;
 
+import java.awt.*;
 import java.util.Date;
 
 public class Simulator extends Thread {
@@ -16,9 +21,18 @@ public class Simulator extends Thread {
     public Date simulationStart;
     public Date simulationEnd;
 
-    private static final int SIMULATION_FREQUENCY = 10;
+    public CampusTime currentTime;
+
+    double semiTime = 0;
+
+    private static final int SIMULATION_FREQUENCY = 200;
 
     public Simulator(){
+
+    }
+
+    public void initializeSimulation(CampusTime time){
+        this.currentTime = time;
 
     }
 
@@ -33,12 +47,32 @@ public class Simulator extends Thread {
     public void run(){
         while(!isFinished){
             if(!isPaused){
-
-
-
                 try {
-                    System.out.print("Sleeping for = "+Configurations.SIMULATION_SPEED);
-                    sleep(Configurations.SIMULATION_SPEED);
+                    StudentController sController = MainController.getInstance().studentController;
+                    sController.simulateStudents(currentTime,Configurations.SIMULATION_SPEED);
+
+                    double currentTimeEncoded = Student.getDoubleEncodedTime(currentTime.getHour(),currentTime.getMin());
+
+                    this.semiTime += Configurations.SIMULATION_SPEED;
+                    if(semiTime>1){
+                        int mins = (int)semiTime;
+                        semiTime = semiTime%1;
+
+                        double currentTimeMins = Student.convertToMins(currentTimeEncoded);
+                        currentTimeMins+= mins;
+
+                        double currentTimeNew = Student.convertMinsToEncoded(currentTimeMins);
+                        int newHour = (int)Student.getHourFromEncodedTime(currentTimeNew);
+                        int newMins = (int)Student.getMinsFromEncodedTime(currentTimeNew);
+
+                        this.currentTime.hour = newHour;
+                        this.currentTime.min = newMins;
+
+                    }
+
+                    AnalysisView.getInstance().mapPanel.repaint();
+                    System.out.print("Sleeping for = "+SIMULATION_FREQUENCY);
+                    sleep(SIMULATION_FREQUENCY);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -71,13 +105,7 @@ public class Simulator extends Thread {
                     isFinished = true;
                 }
                 System.out.println(simulationStart.before(finishingDate));
-
-                try {
-                    System.out.print("Sleeping for = "+Configurations.SIMULATION_SPEED);
-                    sleep(Configurations.SIMULATION_SPEED);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                AnalysisView.getInstance().menuPanel.updateSimulationTime(currentTime);
             }
             else{
                 try {

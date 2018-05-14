@@ -23,8 +23,6 @@ public class MapPanel extends JPanel {
     private double zoomFactor = 1;
 
     CampusMap map;
-
-
     private double oldMouseX,oldMouseY;
 
     private int mouseNodeX,mouseNodeY;
@@ -197,7 +195,7 @@ public class MapPanel extends JPanel {
     }
 
     private void paintNormal(Graphics g){
-        repaint();
+        MainController.getInstance().studentController.paintStudents(g,x,y,zoomFactor);
     }
 
 

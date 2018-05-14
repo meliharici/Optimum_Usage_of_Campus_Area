@@ -14,6 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 public class CampusMap {
@@ -22,6 +23,8 @@ public class CampusMap {
     public static int xDimension = 800;
     public static int yDimension = 500;
     public Graph graph;
+
+    public HashMap<String,LinkedList<Vertex>> pathVertexes;
 
     private static CampusMap map;
 
@@ -36,11 +39,14 @@ public class CampusMap {
         this.xDimension = xDimension;
         this.yDimension = yDimension;
 
+        pathVertexes = new HashMap<>();
+
         this.nodes = new Node[xDimension][yDimension];
         this.pois = new ArrayList<PointOfInterest>();
 
         InitializeMap();
         loadPOIs();
+        InitializeGraph();
 
     }
     public void InitializeMap(){
@@ -97,6 +103,7 @@ public class CampusMap {
             return;
         }
 
+
         connectNodes(x,y,x-1,y);
         connectNodes(x,y,x,y-1);
         connectNodes(x,y,x+1,y);
@@ -109,6 +116,8 @@ public class CampusMap {
     }
 
     public void connectNodes(int x1,int y1,int x2,int y2){
+        Node n3 = nodes[x1][y1];
+
         if(checkValues(x2,y2)==false){
             return;
         }
@@ -124,7 +133,29 @@ public class CampusMap {
             connection[1] = y2;
             connection[2] = Math.sqrt(Math.pow(x2-x1,2)+Math.pow(y2-y1,2));
             n.connections.add(connection);
+
+
+
+            if(false&&n3.nodeState==Node.POI){
+                if(n2.nodeState==Node.ROAD){
+                    if(x1 == 259 && y1 == 161){
+                        System.out.println("Node connected ");
+                        System.out.println(connection[0]);
+                        System.out.println(connection[1]);
+                        System.out.println(connection[2]);
+                    }
+                    if(x1 == 269 && y1 == 156){
+                        System.out.println("Node connected ");
+                        System.out.println(connection[0]);
+                        System.out.println(connection[1]);
+                        System.out.println(connection[2]);
+                    }
+                }
+            }
+
         }
+
+
     }
 
     public boolean checkValues(int x,int y){
@@ -192,6 +223,7 @@ public class CampusMap {
     public void saveCampusMap(){
         saveNodes();
         savePOIs();
+        InitializeGraph();
 
     }
 
@@ -334,6 +366,7 @@ public class CampusMap {
     }
 
     public void InitializeGraph(){
+        InitializeNodeConnections();
         GraphInitializer graphInitializer = new GraphInitializer(nodes);
         graph =  graphInitializer.initializeGraph();
     }
@@ -346,8 +379,17 @@ public class CampusMap {
     }
 
     public Path findPath(int x1, int y1, int x2, int y2){
-
+        String encodedPath = x1+","+y1+","+x2+","+y2;
+        LinkedList<Vertex> path = null;
         Path campusPath = new Path();
+
+        if(pathVertexes.containsKey(encodedPath)){
+            path = pathVertexes.get(encodedPath);
+            for (Vertex vertex : path) {
+                campusPath.appendNode(vertex.getX(),vertex.getY());
+            }
+            return campusPath;
+        }
 
         Vertex source = get_vertex(x1,y1);
         Vertex target = get_vertex(x2,y2);
@@ -356,19 +398,24 @@ public class CampusMap {
         if(checkInputs(x1,y1,x2,y2)){
             Algorithm algo = new Algorithm(graph);
             algo.execute(source);
-            LinkedList<Vertex> path = algo.getPath(target);
+            path = algo.getPath(target);
+
+            if(path==null){
+                return campusPath;
+            }
             for (Vertex vertex : path) {
 
                 campusPath.appendNode(vertex.getX(),vertex.getY());
                 // TODO: Bu alan Path class'ı implement edildikten sonra değişicek. Şimdilik sadece Print
 
-                System.out.println("(" + vertex.getX() + " , " + vertex.getY() + ")");
+                //System.out.println("(" + vertex.getX() + " , " + vertex.getY() + ")");
 
             }
         }
         else{
             System.out.println("Invalid Inputs for path finding");
         }
+        pathVertexes.put(encodedPath,path);
 
         return campusPath;
     }

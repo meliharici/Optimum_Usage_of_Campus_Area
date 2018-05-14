@@ -71,8 +71,9 @@ public class MainController {
     }
 
 
-    public  void startSimulation(){
+    public  void startSimulation(CampusTime time){
         simulator = new Simulator();
+        simulator.initializeSimulation(time);
         simulator.start();
         isSimulationRunning = true;
 
@@ -106,7 +107,7 @@ public class MainController {
             };
 
             simulationThread = new Timer();
-            simulationThread.scheduleAtFixedRate(task,0,Configurations.SIMULATION_SPEED);
+            //simulationThread.scheduleAtFixedRate(task,0,Configurations.SIMULATION_SPEED);
             isSimulationRunning = true;
 
 
