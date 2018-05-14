@@ -153,12 +153,14 @@ public class MenuPanel extends JPanel {
         if(mapEditorButtonState == BUTTON_MAP_EDITOR_STAGE){
             controller.mainView.analysisMenu.mapPanel.setDrawMode(MapPanel.PAINT_MAPEDITOR);
             changeMapEditorButton(BUTTON_NORMAL_STAGE);
+            AnalysisView.getInstance().addInformationElements();
         }
         else{
             CampusMap.getCampusMap().saveCampusMap();
             CampusMap.getCampusMap().InitializeNodeConnections();
             controller.mainView.analysisMenu.mapPanel.setDrawMode(MapPanel.PAINT_NORMAL);
             changeMapEditorButton(BUTTON_MAP_EDITOR_STAGE);
+            AnalysisView.getInstance().hideInformationElements();
         }
 
     }
@@ -227,7 +229,19 @@ public class MenuPanel extends JPanel {
     }
 
     public void updateSimulationTime(CampusTime simulationTime){
+        ArrayList<JComboBox> combos = mb1.getCombos();
+        int day = simulationTime.getDay() - 1;
+        int hour = simulationTime.getHour();
+        int min = simulationTime.getMin();
+        if(hour >= 0 && hour < 24 && min >= 0 && min < 60 && day >= 0 && day < 7){
+            combos.get(0).setSelectedIndex(day); // day
+            combos.get(1).setSelectedIndex(hour); //hour
+            combos.get(2).setSelectedIndex(min); // min
 
+            combos.get(0).repaint();
+            combos.get(1).repaint();
+            combos.get(2).repaint();
+        }
     }
 
     private void cancelSimulation(){

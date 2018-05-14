@@ -11,6 +11,13 @@ public class Configurations {
     public static final String guiConfigPath = "config/guiConfig.txt";
     public static final String systemConfigPath = "config/systemConfig.txt";
 
+    public static final String buildingIconPath = "resources/icons/building.png";
+    public static final String roadIconPath = "resources/icons/road.png";
+    public static final String wallIconPath = "resources/icons/wall.png";
+    public static final String emptyIconPath = "resources/icons/empty.png";
+    public static final String defaultIconPath = "resources/icons/default.png";
+
+
     public static final String kroki_path = "resources/kroki.png";
     public static BufferedImage DEFAULT_CAMPUS_MAP;
 

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import Controller.*;
 import GUI.*;
+import GUI.AnalysisViewFiles.AnalysisView;
+import Model.CampusTime;
 import Model.Course;
 import Model.DataReader;
 import Model.DijkstraModel.Graph;
@@ -35,9 +37,23 @@ public class Main {
 
         //testStuff_dataread();
 
+        testStuff_combobox_time();
+
 
 
     }
+
+
+    public static void testStuff_combobox_time(){
+        // params
+        int hour = 20;
+        int min = 55;
+        String day = "Tuesday";
+
+        CampusTime ct = new CampusTime(hour, min, day);
+        AnalysisView.getInstance().menuPanel.updateSimulationTime(ct);
+    }
+
 
     public static void testStuff_dataread(){
         DataReader reader = new DataReader();
