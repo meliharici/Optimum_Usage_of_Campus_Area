@@ -25,7 +25,7 @@ public class Simulator extends Thread {
 
     double semiTime = 0;
 
-    private static final int SIMULATION_FREQUENCY = 200;
+    private static final int SIMULATION_FREQUENCY = 25;
 
     public Simulator(){
 
@@ -71,7 +71,6 @@ public class Simulator extends Thread {
                     }
 
                     AnalysisView.getInstance().mapPanel.repaint();
-                    System.out.print("Sleeping for = "+SIMULATION_FREQUENCY);
                     sleep(SIMULATION_FREQUENCY);
                 } catch (InterruptedException e) {
                     e.printStackTrace();

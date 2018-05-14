@@ -89,6 +89,9 @@ public class Path {
 
     public double getPathLength(){
         double totalLength = 0;
+        if(pathLength == null){
+            return 0.01;
+        }
 
         for(double value : pathLength){
             totalLength += value;
@@ -115,7 +118,6 @@ public class Path {
 
         if(currentNodeIndex >= pathOfNodes.size()-1){
             pathProgress = 0;
-            System.out.println("Destination Reached !");
         }
 
 
