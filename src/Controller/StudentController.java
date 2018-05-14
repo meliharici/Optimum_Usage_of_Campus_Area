@@ -24,9 +24,9 @@ public class StudentController {
     public void initializeStudents(CampusTime simTime){
         System.out.println("HEllo there");
 
-        ArrayList<Student> readerStudents = reader.getStudents();
+        students = reader.getStudents();
 
-        for(Student s : readerStudents){
+        for(Student s : students){
             s.initializeStudent(simTime);
         }
     }
@@ -37,9 +37,9 @@ public class StudentController {
         }
     }
 
-    public void paintStudents(Graphics g){
+    public void paintStudents(Graphics g, int x, int y, double zoomFactor){
         for(Student s:students){
-            s.paint(g);
+            s.paint(g,x,y,zoomFactor);
         }
     }
 }

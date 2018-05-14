@@ -28,6 +28,8 @@ public class GraphInitializer {
         for(int i = 0; i < vertices.size(); i++) {
             Vertex source = vertices.get(i);
             ArrayList<double[]> connections = nodes[source.getX()][source.getY()].connections;
+
+
             for(int k = 0; k < connections.size(); k++){
                 int targetX = (int) (connections.get(k)[0]);
                 int targetY = (int) (connections.get(k)[1]);

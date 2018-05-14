@@ -222,8 +222,12 @@ public class MenuPanel extends JPanel {
     private void simulate(){
         MainController controller = MainController.getInstance();
         controller.studentController.initializeStudents(getTimeOnController());
-        MainController.getInstance().startSimulation();
+        MainController.getInstance().startSimulation(getTimeOnController());
         System.out.print("Sim start from simulateButtonEvent()");
+    }
+
+    public void updateSimulationTime(CampusTime simulationTime){
+
     }
 
     private void cancelSimulation(){

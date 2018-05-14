@@ -89,6 +89,7 @@ public class Path {
 
     public double getPathLength(){
         double totalLength = 0;
+
         for(double value : pathLength){
             totalLength += value;
         }

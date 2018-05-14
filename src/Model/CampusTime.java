@@ -10,7 +10,7 @@ public class CampusTime {
     static final int SATURDAY = 6;
     static final int SUNDAY = 7;
 
-    int hour, min;
+    public int hour, min;
     int day;
 
     public CampusTime(int hour, int min, String day){
