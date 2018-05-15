@@ -47,6 +47,7 @@ public class CampusMap {
         InitializeMap();
         loadPOIs();
         InitializeGraph();
+        initializeDjikstra();
 
     }
     public void InitializeMap(){
@@ -224,6 +225,7 @@ public class CampusMap {
         saveNodes();
         savePOIs();
         InitializeGraph();
+        initializeDjikstra();
 
     }
 
@@ -354,6 +356,15 @@ public class CampusMap {
         }
     }
 
+    public void initializeDjikstra(){
+        for(PointOfInterest poi1 : this.pois){
+            for(PointOfInterest poi2 : this.pois){
+                findPath(poi1.xCoords,poi1.yCoords,poi2.xCoords,poi2.yCoords);
+                System.out.println("Connection between ("+poi1.name+") and ("+poi2.name+") initialized");
+            }
+        }
+    }
+
     public void removeNode(int x,int y){
         for(int i = 0;i<pois.size();i++){
             PointOfInterest poi = pois.get(i);
@@ -379,17 +390,24 @@ public class CampusMap {
     }
 
     public Path findPath(int x1, int y1, int x2, int y2){
-        String encodedPath = x1+","+y1+","+x2+","+y2;
+        String encodedPath = "("+x1+","+y1+"),("+x2+","+y2+")";
         LinkedList<Vertex> path = null;
         Path campusPath = new Path();
 
         if(pathVertexes.containsKey(encodedPath)){
             path = pathVertexes.get(encodedPath);
+
+            if(path==null){
+                return campusPath;
+            }
+
             for (Vertex vertex : path) {
                 campusPath.appendNode(vertex.getX(),vertex.getY());
             }
             return campusPath;
         }
+        System.out.println("Not found path");
+        System.out.println(encodedPath);
 
         Vertex source = get_vertex(x1,y1);
         Vertex target = get_vertex(x2,y2);
@@ -401,6 +419,7 @@ public class CampusMap {
             path = algo.getPath(target);
 
             if(path==null){
+                pathVertexes.put(encodedPath,path);
                 return campusPath;
             }
             for (Vertex vertex : path) {
@@ -416,7 +435,6 @@ public class CampusMap {
             System.out.println("Invalid Inputs for path finding");
         }
         pathVertexes.put(encodedPath,path);
-
         return campusPath;
     }
 
