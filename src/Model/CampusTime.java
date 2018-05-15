@@ -23,6 +23,8 @@ public class CampusTime {
 
     public int getMin(){ return min; }
 
+    public int getDay() { return day; }
+
     public static int getDayEng(String day){
         int day_code = -1;
         switch (day) {

@@ -38,4 +38,8 @@ public class MenuButton extends JButton {
         combos.add(combo);
         this.add(combo);
     }
+
+    public ArrayList<JComboBox> getCombos(){
+        return combos;
+    }
 }

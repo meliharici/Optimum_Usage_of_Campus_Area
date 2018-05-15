@@ -18,6 +18,9 @@ public class AnalysisView extends JPanel{
     private static int color_g = 63;
     private static int color_b = 83;
 
+    InfoElement ie1,ie2,ie3,ie4,ie5;
+    JSlider simulationSpeedSlider;
+
     private static AnalysisView analysisView;
 
     public static AnalysisView getInstance(){
@@ -70,8 +73,13 @@ public class AnalysisView extends JPanel{
         infoPanel.setLocation((int)(Configurations.WIDTH*Configurations.MENU_PANEL_WIDTH_RATIO),(int) (Configurations.HEIGHT*Configurations.MAP_PANEL_HEIGHT_RATIO));
         infoPanel.setOpaque(true);
         infoPanel.setBackground(new Color(43, 63, 83));
+        infoPanel.setLayout(null);
+        int width =  infoPanel.getSize().width;
+        int height = infoPanel.getSize().height;
 
-        JSlider simulationSpeedSlider = new JSlider(2000,3900,3000);
+        simulationSpeedSlider = new JSlider(2000,3900,3000);
+        simulationSpeedSlider.setLocation(width / 4, height / 4);
+        simulationSpeedSlider.setSize(width / 3 , height / 3);
         simulationSpeedSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
@@ -84,6 +92,39 @@ public class AnalysisView extends JPanel{
 
         this.add(infoPanel);
     }
+
+    public void addInformationElements(){
+        simulationSpeedSlider.setVisible(false);
+        int width =  infoPanel.getSize().width;
+        int height = infoPanel.getSize().height;
+        int x = (width * 2) / 100;  // x-padding %2
+        int y = (height * 15) / 100; // y-padding %15
+        int w = (width * 16) / 100; // width %16
+        int h = (height * 80) / 100; // height %80
+        int s = 2 * x; // horizontal space between elements
+
+         ie1 = new InfoElement(x,y , w, h, "0", Configurations.defaultIconPath);
+         ie2 = new InfoElement(x + w + s, y , w, h, "1", Configurations.buildingIconPath);
+         ie3 = new InfoElement(x + w + s + w + s , y , w, h, "2", Configurations.roadIconPath);
+         ie4 = new InfoElement(x + w + s + 2*w + 2*s, y , w, h, "3", Configurations.wallIconPath);
+         ie5 = new InfoElement(x + w + s + 3*w + 3*s, y , w, h, "4", Configurations.emptyIconPath);
+
+        infoPanel.add(ie1);
+        infoPanel.add(ie2);
+        infoPanel.add(ie3);
+        infoPanel.add(ie4);
+        infoPanel.add(ie5);
+    }
+
+    public void hideInformationElements(){
+        ie1.setVisible(false);
+        ie2.setVisible(false);
+        ie3.setVisible(false);
+        ie4.setVisible(false);
+        ie5.setVisible(false);
+        simulationSpeedSlider.setVisible(true);
+    }
+
 
     public void setCampusData(CampusData campusData){
         this.repaint();
