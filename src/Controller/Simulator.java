@@ -52,11 +52,13 @@ public class Simulator extends Thread {
                     sController.simulateStudents(currentTime,Configurations.SIMULATION_SPEED);
 
                     double currentTimeEncoded = Student.getDoubleEncodedTime(currentTime.getHour(),currentTime.getMin());
+                    double simRatio = 100;
 
-                    this.semiTime += Configurations.SIMULATION_SPEED;
-                    if(semiTime>1){
-                        int mins = (int)semiTime;
-                        semiTime = semiTime%1;
+                    this.semiTime += Configurations.SIMULATION_SPEED*simRatio;
+                    if(semiTime>1000){
+                        System.out.println(currentTime.hour+":"+currentTime.min);
+                        int mins = (int)((semiTime+1e-5)/1000);
+                        semiTime = semiTime%1000;
 
                         double currentTimeMins = Student.convertToMins(currentTimeEncoded);
                         currentTimeMins+= mins;
