@@ -14,8 +14,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class CampusMap {
     public Node[][] nodes;
@@ -357,6 +361,18 @@ public class CampusMap {
     }
 
     public void initializeDjikstra(){
+        for(int i = 0; i<pois.size();i++){
+            for(int j = i; j<pois.size();j++){
+                PointOfInterest poi1 = pois.get(i);
+                PointOfInterest poi2 = pois.get(j);
+
+                new Thread(() -> findPath(poi1.xCoords,poi1.yCoords,poi2.xCoords,poi2.yCoords)).start();
+            }
+        }
+
+    }
+
+    public void oldDj(){
         for(PointOfInterest poi1 : this.pois){
             for(PointOfInterest poi2 : this.pois){
                 findPath(poi1.xCoords,poi1.yCoords,poi2.xCoords,poi2.yCoords);
@@ -389,9 +405,26 @@ public class CampusMap {
         return (startNodeState==Node.POI || startNodeState == Node.ROAD) && (endNodeState == Node.POI || endNodeState==Node.ROAD);
     }
 
+    public String getEncodedPathString(int x1,int y1,int x2,int y2){
+        return ("("+x1+","+y1+"),("+x2+","+y2+")");
+    }
+
+    static <T> LinkedList<T> reverse(final LinkedList<T> list) {
+        LinkedList<T> reversedList = new LinkedList<>();
+        int finalIndex = list.size();
+
+        for(int i = finalIndex-1; i >= 0; i--){
+            reversedList.add(list.get(i));
+        }
+
+        return reversedList;
+    }
+
     public Path findPath(int x1, int y1, int x2, int y2){
-        String encodedPath = "("+x1+","+y1+"),("+x2+","+y2+")";
+        String encodedPath = getEncodedPathString(x1,y1,x2,y2);
+        String reverseEncodedPath = getEncodedPathString(x2,y2,x1,y1);
         LinkedList<Vertex> path = null;
+        LinkedList<Vertex> reversePath = null;
         Path campusPath = new Path();
 
         if(pathVertexes.containsKey(encodedPath)){
@@ -406,6 +439,23 @@ public class CampusMap {
             }
             return campusPath;
         }
+
+
+        else if(pathVertexes.containsKey(reverseEncodedPath)){
+            reversePath = pathVertexes.get(reverseEncodedPath);
+
+            if(reversePath==null){
+                return campusPath;
+            }
+            path = reverse(reversePath);
+
+            for (Vertex vertex : path) {
+                campusPath.appendNode(vertex.getX(),vertex.getY());
+            }
+            return campusPath;
+        }
+
+
         System.out.println("Not found path");
         System.out.println(encodedPath);
 
