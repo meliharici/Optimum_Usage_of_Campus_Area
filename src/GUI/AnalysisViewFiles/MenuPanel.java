@@ -7,7 +7,6 @@ import Controller.MainController;
 import Model.CampusTime;
 import Model.MapModel.CampusMap;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
-import sun.applet.Main;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -154,6 +153,7 @@ public class MenuPanel extends JPanel {
             controller.mainView.analysisMenu.mapPanel.setDrawMode(MapPanel.PAINT_MAPEDITOR);
             changeMapEditorButton(BUTTON_NORMAL_STAGE);
             AnalysisView.getInstance().addInformationElements();
+            AnalysisView.getInstance().repaint();
         }
         else{
             CampusMap.getCampusMap().saveCampusMap();

@@ -7,7 +7,6 @@ import Model.CampusData;
 import Model.MapModel.CampusMap;
 import Model.MapModel.Node;
 import Model.MapModel.PointOfInterest;
-import jdk.nashorn.internal.runtime.arrays.ArrayIndex;
 
 import java.awt.*;
 import java.util.ArrayList;

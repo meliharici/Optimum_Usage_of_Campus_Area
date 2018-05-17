@@ -1,5 +1,6 @@
 package Controller;
 import Model.MapModel.CampusMap;
+import Model.MapModel.Path;
 import Model.MapModel.PointOfInterest;
 import Model.Student;
 
@@ -35,12 +36,26 @@ public class POIController {
         for(PointOfInterest poi : pois){
             if(poi.type == type){
                 possiblePOIs.add(poi);
+                Path path = CampusMap.getCampusMap().findPath((int)x,(int)y,poi.xCoords,poi.yCoords);
+                totalScore += poi.preferance*100+100-poi.distancePenalty*path.getPathLength()/2;
             }
         }
         Random rgen = new Random();
-        int randomIndex = rgen.nextInt(possiblePOIs.size());
+        currentScore = rgen.nextDouble()*totalScore;
 
-        return possiblePOIs.get(randomIndex);
+        for(PointOfInterest poi : possiblePOIs){
+            Path path = CampusMap.getCampusMap().findPath((int)x,(int)y,poi.xCoords,poi.yCoords);
+            double poiScore = poi.preferance*100+100-poi.distancePenalty*path.getPathLength()/2;
+            if(currentScore<poiScore){
+                return poi;
+            }
+            else{
+                currentScore -= poiScore;
+            }
+        }
+
+        System.out.println("Should not happen");
+        return possiblePOIs.get(0);
     }
 
 
