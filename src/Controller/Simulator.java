@@ -4,7 +4,6 @@ import GUI.AnalysisViewFiles.AnalysisView;
 import Model.CampusTime;
 import Model.MapModel.CampusMap;
 import Model.Student;
-import sun.applet.Main;
 
 import java.awt.*;
 import java.util.Date;
