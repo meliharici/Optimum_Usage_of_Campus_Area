@@ -67,6 +67,17 @@ public class Student {
 
     int id;
 
+    public void initializeParameters(){
+        action = -1;
+        nextAction = -1;
+        poiLeaveTime = -1;
+        currentLoc = null;
+        previousLoc = null;
+        nextLoc = null;
+        enterancePOI = null;
+        foodState = -1;
+    }
+
     public Student(int id){
         this.id = id;
         fall_courses = new ArrayList<>();
@@ -341,6 +352,7 @@ public class Student {
     }
 
     public void initializeStudent(CampusTime time){
+        initializeParameters();
         courses = getCoursesAtDay(time.day);
         parseStudentStates(time);
         calculateCurrentLocation(time);
