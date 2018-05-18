@@ -23,6 +23,10 @@ public class POIController {
             }
         }
 
+        if(poi == null){
+            throw new RuntimeException("Failed to find POI with name ("+name+")");
+        }
+
         return poi;
     }
 

@@ -113,7 +113,7 @@ public class PoiPanel extends JPanel {
     public void initializePenaltyField(){
         JPanel penaltyPanel = getDefaultContentPanel();
 
-        JLabel penaltyLabel = new JLabel("Enter distance-penalty paremeter : ");
+        JLabel penaltyLabel = new JLabel("Enter distance-penalty parameter : ");
         penaltyPanel.add(penaltyLabel);
 
         penaltyParemeterField = getNumberOnlyTextField(100);
@@ -126,7 +126,7 @@ public class PoiPanel extends JPanel {
     public void initializePreferanceField(){
         JPanel preferancePanel = getDefaultContentPanel();
 
-        JLabel preferanceLabel = new JLabel("Enter preferance parameter : ");
+        JLabel preferanceLabel = new JLabel("Enter desirability parameter : ");
         preferancePanel.add(preferanceLabel);
 
         preferanceParameterField = getNumberOnlyTextField(100);
