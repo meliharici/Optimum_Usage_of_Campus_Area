@@ -22,6 +22,14 @@ public class POIController {
                 poi = p;
             }
         }
+<<<<<<< HEAD
+=======
+
+        if(poi == null){
+            throw new RuntimeException("Failed to find POI with name ("+name+")");
+        }
+
+>>>>>>> c76114b1f242b8050a138b47923a1db04c1514e7
         return poi;
     }
 
