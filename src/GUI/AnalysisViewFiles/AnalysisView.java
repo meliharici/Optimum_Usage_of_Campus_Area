@@ -77,14 +77,14 @@ public class AnalysisView extends JPanel{
         int width =  infoPanel.getSize().width;
         int height = infoPanel.getSize().height;
 
-        simulationSpeedSlider = new JSlider(2000,3900,3000);
+        simulationSpeedSlider = new JSlider(1000,6000,3500);
         simulationSpeedSlider.setLocation(width / 4, height / 4);
         simulationSpeedSlider.setSize(width / 3 , height / 3);
         simulationSpeedSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
                 JSlider slider = (JSlider) e.getSource();
-                Configurations.SIMULATION_SPEED = 4000-slider.getValue();
+                Configurations.SIMULATION_SPEED = (slider.getValue())/6000.0;
             }
         });
         simulationSpeedSlider.setBackground(new Color(color_r,color_g,color_b));

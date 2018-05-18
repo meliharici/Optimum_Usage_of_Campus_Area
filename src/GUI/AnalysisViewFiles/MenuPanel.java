@@ -104,6 +104,7 @@ public class MenuPanel extends JPanel {
         generateButton.addActionListener(e -> {
             generate();
         });
+        generateButton.setVisible(false);
 
         // Simulate Button
         numButtons = 2;
