@@ -157,8 +157,8 @@ public class MenuPanel extends JPanel {
             AnalysisView.getInstance().repaint();
         }
         else{
-            CampusMap.getCampusMap().saveCampusMap();
             CampusMap.getCampusMap().InitializeNodeConnections();
+            CampusMap.getCampusMap().saveCampusMap();
             controller.mainView.analysisMenu.mapPanel.setDrawMode(MapPanel.PAINT_NORMAL);
             changeMapEditorButton(BUTTON_MAP_EDITOR_STAGE);
             AnalysisView.getInstance().hideInformationElements();

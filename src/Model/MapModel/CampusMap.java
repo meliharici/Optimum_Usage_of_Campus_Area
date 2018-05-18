@@ -361,12 +361,17 @@ public class CampusMap {
     }
 
     public void initializeDjikstra(){
+        this.pathVertexes = new HashMap<>();
         for(int i = 0; i<pois.size();i++){
             for(int j = i; j<pois.size();j++){
                 PointOfInterest poi1 = pois.get(i);
                 PointOfInterest poi2 = pois.get(j);
 
                 new Thread(() -> findPath(poi1.xCoords,poi1.yCoords,poi2.xCoords,poi2.yCoords)).start();
+            }
+            try {
+                Thread.currentThread().sleep(500);
+            } catch (InterruptedException e) {
             }
         }
 

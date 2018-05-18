@@ -56,6 +56,7 @@ public class Simulator extends Thread {
                     this.semiTime += Configurations.SIMULATION_SPEED*simRatio;
                     if(semiTime>1000){
                         System.out.println(currentTime.hour+":"+currentTime.min);
+                        AnalysisView.getInstance().menuPanel.updateSimulationTime(currentTime);
                         int mins = (int)((semiTime+1e-5)/1000);
                         semiTime = semiTime%1000;
 
