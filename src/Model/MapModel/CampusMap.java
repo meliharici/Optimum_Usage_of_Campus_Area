@@ -363,16 +363,23 @@ public class CampusMap {
     public void initializeDjikstra(){
         this.pathVertexes = new HashMap<>();
         for(int i = 0; i<pois.size();i++){
+            ArrayList<Thread> threads = new ArrayList<Thread>();
             for(int j = i; j<pois.size();j++){
                 PointOfInterest poi1 = pois.get(i);
                 PointOfInterest poi2 = pois.get(j);
+                Thread newThread = new Thread(() -> findPath(poi1.xCoords,poi1.yCoords,poi2.xCoords,poi2.yCoords));
+                threads.add(newThread);
+                newThread.start();
+            }
 
-                new Thread(() -> findPath(poi1.xCoords,poi1.yCoords,poi2.xCoords,poi2.yCoords)).start();
+            for(Thread t : threads){
+                try {
+                    t.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-            try {
-                Thread.currentThread().sleep(500);
-            } catch (InterruptedException e) {
-            }
+            System.out.println("Initialization of "+pois.get(i).name+" complete");
         }
 
     }
