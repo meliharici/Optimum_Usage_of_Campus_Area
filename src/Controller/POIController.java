@@ -22,7 +22,6 @@ public class POIController {
                 poi = p;
             }
         }
-
         return poi;
     }
 
